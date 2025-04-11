@@ -1,11 +1,16 @@
-from datetime import datetime
+import datetime
 
 import requests
 from bs4 import BeautifulSoup
 
+from helpers import get_next_schedule_start_date
+
 SCHEDULE_URL = "https://liberec.imfit.cz/SkupinoveLekce.aspx"
 
-def get_schedule():
+def get_schedule(last_run_date: datetime.datetime):
+    if not get_next_schedule_start_date(last_run_date, 4):
+        return []
+
     response = requests.get(SCHEDULE_URL)
     parsed_schedules = parse_schedule(response.text)
     return parsed_schedules
@@ -19,7 +24,7 @@ def parse_schedule(html):
 
     for card in class_cards:
         time_tag = card.find('span', id=lambda x: x and 'lblSkupCasOdDo' in x)
-        time = time_tag.text.strip() if time_tag else "Unknown Time"
+        time = time_tag.text.strip().replace(" ", "") if time_tag else "Unknown Time"
 
         class_name_tag = card.find('span', id=lambda x: x and 'lblSkupPopis' in x)
         class_name = class_name_tag.text.strip() if class_name_tag else "Unknown Class"
@@ -33,9 +38,7 @@ def parse_schedule(html):
         date_tag = card.find('input', {'name': lambda x: x and 'hfDatum2' in x})
         date = date_tag['value'].split()[0] if date_tag else "Unknown Date"
 
-        day_of_week = datetime.strptime(date, "%d.%m.%Y").strftime('%A')
-
-        day_entry = {'date': date, 'day': day_of_week, "gym": "I'm Fit", 'lessons': []}
+        day_entry = {'date': date, "gym": "I'm Fit", 'lessons': []}
 
         # Add the lesson to the respective day
         day_entry['lessons'].append({

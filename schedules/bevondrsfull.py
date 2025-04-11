@@ -3,10 +3,15 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
+from helpers import get_next_schedule_start_date
+
 SCHEDULE_URL = "https://cz.boofit.net/bevondrsfull/rozvrh-a-rezervace/aktualni-rozvrh/1071/"
 
-def get_schedule(date_spec=None):
-    today = date_spec or datetime.datetime.today().strftime("%d-%m-%Y")
+def get_schedule(last_run_date: datetime.datetime):
+    if not get_next_schedule_start_date(last_run_date):
+        return []
+
+    today = datetime.datetime.today().strftime("%d-%m-%Y")
     response = requests.get(SCHEDULE_URL + today)
     parsed_schedules = parse_schedule(response.text)
     return parsed_schedules
@@ -23,7 +28,6 @@ def parse_schedule(html):
         # Find the date for the day
         date_heading = day_container.find("dt")
         if date_heading:
-            day["day"] = date_heading.next.text
             day["date"] = date_heading.find("strong").text.strip()
 
         # Find lessons for the day
@@ -34,13 +38,13 @@ def parse_schedule(html):
 
             # Parse time, name, trainers, and spots
             time_and_name = lesson_element.find("span").get_text(" ", strip=True).split()
-            lesson["time"] = f"{time_and_name[0]} - {time_and_name[2]}"
+            lesson["time"] = f"{time_and_name[0]}-{time_and_name[2]}"
             lesson["name"] = lesson_element.find("em").text.strip()
             lesson["trainer"] = [trainer.get_text(strip=True) for trainer in lesson_element.find_all("b")]
 
             # Extract available spots
             spots_element = lesson_element.find("span", class_="places")
-            lesson["spots"] = spots_element.text.strip() if spots_element else "N/A"
+            lesson["spots"] = spots_element.text.strip().replace(" ", "") if spots_element else "N/A"
 
             lessons.append(lesson)
 
@@ -48,5 +52,4 @@ def parse_schedule(html):
             day["lessons"] = lessons
             day["gym"] = "Be Vondrsfull"
         days.append(day)
-
     return days
