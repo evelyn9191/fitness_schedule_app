@@ -1,18 +1,17 @@
-import datetime
-
 import requests
 from bs4 import BeautifulSoup
 
 from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://cz.boofit.net/bevondrsfull/rozvrh-a-rezervace/aktualni-rozvrh/1071/"
+GYM = "Be Vondrsfull"
 
-def get_schedule(last_run_date: datetime.datetime):
-    if not get_next_schedule_start_date(last_run_date):
+def get_schedule():
+    parse_from = get_next_schedule_start_date(GYM)
+    if not parse_from:
         return []
 
-    today = datetime.datetime.today().strftime("%d-%m-%Y")
-    response = requests.get(SCHEDULE_URL + today)
+    response = requests.get(SCHEDULE_URL + parse_from)
     parsed_schedules = parse_schedule(response.text)
     return parsed_schedules
 
@@ -48,8 +47,8 @@ def parse_schedule(html):
 
             lessons.append(lesson)
 
-        if lessons:
-            day["lessons"] = lessons
-            day["gym"] = "Be Vondrsfull"
+        day["lessons"] = lessons
+        day["gym"] = GYM
         days.append(day)
+    print(days)
     return days

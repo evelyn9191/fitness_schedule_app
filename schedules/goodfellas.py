@@ -1,17 +1,17 @@
-import datetime
-
 import requests
 from bs4 import BeautifulSoup
 
 from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://goodfellasgym.inrs.cz/rs/kalendar_vypis/kalendar_vypis"
+GYM = "GoodFellas"
 
-def get_schedule(last_run_date: datetime.datetime):
-    if not get_next_schedule_start_date(last_run_date):
+def get_schedule():
+    parse_from = get_next_schedule_start_date(GYM)
+    if not parse_from:
         return []
 
-    schedule_url = f"{SCHEDULE_URL}/{datetime.datetime.today().strftime("%Y-%m-%d")}/1"
+    schedule_url = f"{SCHEDULE_URL}/{parse_from}/1"
     response = requests.post(schedule_url)
     parsed_schedules = parse_schedule(response.text)
     return parsed_schedules
@@ -30,7 +30,7 @@ def parse_schedule(html):
         if date_div:
             day_info["date"] = date_div.text.rstrip().split()[-1]
 
-        day_info["gym"] = "GoodFellas"
+        day_info["gym"] = GYM
 
         lessons = []
         lesson_divs = row.find_all("div", class_="jedna-lekce-vypis")

@@ -1,14 +1,14 @@
-import datetime
-
 import requests
 from bs4 import BeautifulSoup
 
 from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://liberec.imfit.cz/SkupinoveLekce.aspx"
+GYM = "I'm Fit"
 
-def get_schedule(last_run_date: datetime.datetime):
-    if not get_next_schedule_start_date(last_run_date, 4):
+def get_schedule():
+    parse_from = get_next_schedule_start_date(GYM, 3)
+    if not parse_from:
         return []
 
     response = requests.get(SCHEDULE_URL)
@@ -38,7 +38,7 @@ def parse_schedule(html):
         date_tag = card.find('input', {'name': lambda x: x and 'hfDatum2' in x})
         date = date_tag['value'].split()[0] if date_tag else "Unknown Date"
 
-        day_entry = {'date': date, "gym": "I'm Fit", 'lessons': []}
+        day_entry = {'date': date, "gym": GYM, 'lessons': []}
 
         # Add the lesson to the respective day
         day_entry['lessons'].append({

@@ -6,15 +6,16 @@ import requests
 from helpers import get_next_schedule_start_date
 
 SCHEDULE_API_URL = "https://yogaholick.reenio.cz/cs/api/Term/List"
+GYM = "Yogaholick"
 
-def get_schedule(last_run_date: datetime.datetime):
-    if not get_next_schedule_start_date(last_run_date):
+def get_schedule():
+    parse_from = get_next_schedule_start_date(GYM)
+    if not parse_from:
         return []
 
-    start_day = datetime.datetime.today().strftime("%d-%m-%Y")
     view_mode = "7-days"
     response = requests.post(SCHEDULE_API_URL, files=[
-        ("date", (None, start_day)),
+        ("date", (None, parse_from)),
         ("viewMode", (None, view_mode)),
         ("page", (None, "0")),
         ("filter.resource[0].id", (None, "25")),
@@ -44,11 +45,14 @@ def parse_schedule(schedules: dict):
         lesson["time"] = f"{start_time}-{end_time}"
         lesson["name"] = event["eventResources"][0]["name"]
         lesson["trainer"] = event["eventResources"][0]["employee"]["name"]
-        lesson["spots"] = f"{event["reservations"][0]["capacity"]}/{event["maxCapacity"]}"
+        try:
+            lesson["spots"] = f"{event["reservations"][0]["capacity"]}/{event["maxCapacity"]}"
+        except IndexError:
+            lesson["spots"] = ""
         lessons_by_dates[current_date].append(lesson)
 
     for date, lessons in lessons_by_dates.items():
-        days.append({"date": date, "gym": "Yogaholick", "lessons": lessons})
+        days.append({"date": date, "gym": GYM, "lessons": lessons})
 
     return days
 

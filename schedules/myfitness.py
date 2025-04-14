@@ -10,9 +10,11 @@ load_dotenv()
 
 LOGIN_URL = "https://www.supersaas.cz/schedule/login/jumping-broumovska/rezervace"
 SCHEDULE_URL = "https://www.supersaas.cz/schedule/jumping-broumovska/rezervace"
+GYM = "MyFitness"
 
-def get_schedule(last_run_date: datetime.datetime):
-    if not get_next_schedule_start_date(last_run_date):
+def get_schedule():
+    parse_from = get_next_schedule_start_date(GYM)
+    if not parse_from:
         return []
 
     session = HTMLSession()
@@ -61,6 +63,6 @@ def parse_schedule(response_text: str):
                                                })
 
     for date, lessons in lessons_by_dates.items():
-        days.append({"date": date, "gym": "MyFitness", "lessons": lessons})
+        days.append({"date": date, "gym": GYM, "lessons": lessons})
 
     return days

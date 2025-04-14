@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 
@@ -26,8 +27,10 @@ def to_rfc_datetime(date_str, time_str):
 
 def sync_lessons_to_calendar(service, data):
     for day in data:
+        logging.info("Creating calendar events for gym %s on %s", day.get("gym"), day["date"])
+        print(day)
         for lesson in day['lessons']:
-            print(lesson)
+            print(lesson, day["gym"])
             start_iso, end_iso = to_rfc_datetime(day['date'], lesson['time'])
             event_body = {
                 'summary': lesson['name'],
