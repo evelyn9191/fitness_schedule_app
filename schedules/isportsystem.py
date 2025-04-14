@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga"]
 
 class ISportSystemSchedulesHandler:
     def __init__(self, gym: str, domain_name: str, parse_from: str):
@@ -28,7 +29,7 @@ class ISportSystemSchedulesHandler:
             "timetableWidth": 956,
         }
 
-    def parse_schedule(html):
+    def parse_schedule(self, html):
         soup = BeautifulSoup(html, "html.parser")
 
         rows = soup.find_all('a', id=lambda x: x and x.startswith("id_activity_term_"))
@@ -40,6 +41,8 @@ class ISportSystemSchedulesHandler:
             inner_soup = BeautifulSoup(raw_title, 'html.parser')
             name_tag = inner_soup.select_one('.activityTooltipName')
             name = name_tag.get_text(strip=True) if name_tag else None
+            if name in IGNORED_LESSONS:
+                continue
 
             labels = inner_soup.select('.tItem1')
             values = inner_soup.select('.tItem2')
@@ -67,7 +70,7 @@ class ISportSystemSchedulesHandler:
             lessons_by_dates[current_date].append(lesson)
 
         for date, lessons in lessons_by_dates.items():
-            days.append({"date": date, "gym": GYM, "lessons": lessons})
+            days.append({"date": date, "gym": self.gym, "lessons": lessons})
 
         print(days)
         return days

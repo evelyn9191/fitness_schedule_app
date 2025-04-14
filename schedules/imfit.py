@@ -5,6 +5,7 @@ from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://liberec.imfit.cz/SkupinoveLekce.aspx"
 GYM = "I'm Fit"
+IGNORED_LESSONS = ["Maminky"]
 
 def get_schedule():
     parse_from = get_next_schedule_start_date(GYM, 3)
@@ -23,11 +24,14 @@ def parse_schedule(html):
     class_cards = soup.find_all('div', class_='mycard_skupinovky2')
 
     for card in class_cards:
-        time_tag = card.find('span', id=lambda x: x and 'lblSkupCasOdDo' in x)
-        time = time_tag.text.strip().replace(" ", "") if time_tag else "Unknown Time"
-
         class_name_tag = card.find('span', id=lambda x: x and 'lblSkupPopis' in x)
         class_name = class_name_tag.text.strip() if class_name_tag else "Unknown Class"
+
+        if class_name in IGNORED_LESSONS:
+            continue
+
+        time_tag = card.find('span', id=lambda x: x and 'lblSkupCasOdDo' in x)
+        time = time_tag.text.strip().replace(" ", "") if time_tag else "Unknown Time"
 
         trainer_tag = card.find('span', id=lambda x: x and 'lblSkupTrener' in x)
         trainer = trainer_tag.text.strip() if trainer_tag else "Unknown Trainer"

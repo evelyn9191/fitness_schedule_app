@@ -5,6 +5,7 @@ from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://cz.boofit.net/bevondrsfull/rozvrh-a-rezervace/aktualni-rozvrh/1071/"
 GYM = "Be Vondrsfull"
+IGNORED_LESSONS = ["PRONÁJEM SÁLU"]
 
 def get_schedule():
     parse_from = get_next_schedule_start_date(GYM)
@@ -34,11 +35,13 @@ def parse_schedule(html):
         lesson_elements = day_container.find_all("p", class_="lesson")
         for lesson_element in lesson_elements:
             lesson = {}
+            lesson["name"] = lesson_element.find("em").text.strip()
+            if lesson["name"] in IGNORED_LESSONS:
+                continue
 
             # Parse time, name, trainers, and spots
             time_and_name = lesson_element.find("span").get_text(" ", strip=True).split()
             lesson["time"] = f"{time_and_name[0]}-{time_and_name[2]}"
-            lesson["name"] = lesson_element.find("em").text.strip()
             lesson["trainer"] = [trainer.get_text(strip=True) for trainer in lesson_element.find_all("b")]
 
             # Extract available spots

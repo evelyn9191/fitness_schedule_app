@@ -30,7 +30,7 @@ def sync_lessons_to_calendar(service, data):
         logging.info("Creating calendar events for gym %s on %s", day.get("gym"), day["date"])
         print(day)
         for lesson in day['lessons']:
-            print(lesson, day["gym"])
+            print(lesson)
             start_iso, end_iso = to_rfc_datetime(day['date'], lesson['time'])
             event_body = {
                 'summary': lesson['name'],

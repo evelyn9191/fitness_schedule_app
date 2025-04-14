@@ -20,7 +20,7 @@ def run():
 def save_run_details(gyms: set) -> None:
     last_run_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     this_run_details = {gym: last_run_time for gym in gyms}
-    with open('run_details.json', 'rw') as file:
+    with open('run_details.json', 'r+w') as file:
         previous_run_details = json.load(file)
         run_details = {**previous_run_details, **this_run_details}
         json.dump(run_details, file, indent=4)

@@ -5,6 +5,7 @@ from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://goodfellasgym.inrs.cz/rs/kalendar_vypis/kalendar_vypis"
 GYM = "GoodFellas"
+IGNORED_LESSONS = ["OPEN"]
 
 def get_schedule():
     parse_from = get_next_schedule_start_date(GYM)
@@ -36,8 +37,11 @@ def parse_schedule(html):
         lesson_divs = row.find_all("div", class_="jedna-lekce-vypis")
         for lesson_div in lesson_divs:
             lesson_info = {}
-            lesson_info["time"] = lesson_div.find("div", class_="lekce-telo-cas").get_text(strip=True).replace(" ", "")
             lesson_info["name"] = lesson_div.find("a", class_="lekce-telo-aktivita").text.strip()
+            if lesson_info["name"] in IGNORED_SESSIONS:
+                continue
+
+            lesson_info["time"] = lesson_div.find("div", class_="lekce-telo-cas").get_text(strip=True).replace(" ", "")
             lesson_info["trainer"] = lesson_div.find("div", class_="lekve-telo-instruktor").text.strip()
             try:
                 occupancy = lesson_div.find("span", class_="cisla").get_text(strip=True)
