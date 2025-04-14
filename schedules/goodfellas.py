@@ -38,7 +38,7 @@ def parse_schedule(html):
         for lesson_div in lesson_divs:
             lesson_info = {}
             lesson_info["name"] = lesson_div.find("a", class_="lekce-telo-aktivita").text.strip()
-            if lesson_info["name"] in IGNORED_SESSIONS:
+            if lesson_info["name"] in IGNORED_LESSONS:
                 continue
 
             lesson_info["time"] = lesson_div.find("div", class_="lekce-telo-cas").get_text(strip=True).replace(" ", "")
