@@ -11,6 +11,7 @@ load_dotenv()
 LOGIN_URL = "https://www.supersaas.cz/schedule/login/jumping-broumovska/rezervace"
 SCHEDULE_URL = "https://www.supersaas.cz/schedule/jumping-broumovska/rezervace"
 GYM = "MyFitness"
+IGNORED_LESSONS = ["CARDIO STEP", "JUMPING", "CARDIO STEP"]
 
 def get_schedule():
     parse_from = get_next_schedule_start_date(GYM)
@@ -48,6 +49,9 @@ def parse_schedule(response_text: str):
     lessons_by_dates = {}
     for session in all_sessions:
         start, end, _, max_spots, booked_spots, _, _, name, trainer, _, _, _ = session
+        if name in IGNORED_LESSONS:
+            continue
+
         start_datetime = datetime.datetime.fromtimestamp(start)
         current_date = start_datetime.date().strftime("%d.%m.%Y")
         if current_date not in lessons_by_dates:

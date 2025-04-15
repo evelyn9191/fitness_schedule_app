@@ -5,7 +5,7 @@ from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://goodfellasgym.inrs.cz/rs/kalendar_vypis/kalendar_vypis"
 GYM = "GoodFellas"
-IGNORED_LESSONS = ["OPEN"]
+IGNORED_LESSONS = ["OPEN", "GF Maminky s dětmi"]
 
 def get_schedule():
     parse_from = get_next_schedule_start_date(GYM)
