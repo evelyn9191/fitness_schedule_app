@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -12,10 +14,12 @@ def get_schedule():
     if not parse_from:
         return []
 
-    parse_from = get_date_string(parse_from)
-    schedule_url = f"{SCHEDULE_URL}/{parse_from}/1"
-    response = requests.post(schedule_url)
-    parsed_schedules = parse_schedule(response.text)
+    dates_to_parse_from = [get_date_string(parse_from), get_date_string(parse_from + datetime.timedelta(days=7))]
+    parsed_schedules = []
+    for date in dates_to_parse_from:
+        schedule_url = f"{SCHEDULE_URL}/{date}/1"
+        response = requests.post(schedule_url)
+        parsed_schedules.extend(parse_schedule(response.text))
     return parsed_schedules
 
 def parse_schedule(html):

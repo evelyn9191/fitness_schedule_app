@@ -21,8 +21,8 @@ def get_schedule():
     session = HTMLSession()
     session.get(LOGIN_URL)
     login_data = {
-        "name": os.getenv("MYFITNESS_USERNAME"),
-        "password": os.getenv("MYFITNESS_PASSWORD"),
+        "name": "ockova.michaela@gmail.com",
+        "password": "9EuhAXbSWST9.A.",
         "remember": "K",
         "button": ""
     }
@@ -44,6 +44,7 @@ def get_schedule():
 def parse_schedule(response_text: str):
     body = response_text.split("var app=")[1].split("var busy_color")[0]
     all_sessions = json.loads(body)
+    print(all_sessions)
 
     days = []
     lessons_by_dates = {}

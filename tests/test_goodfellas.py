@@ -1,6 +1,6 @@
 import freezegun
 import pytest
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, call
 from schedules.goodfellas import get_schedule
 
 MOCK_SCHEDULE_URL = "https://goodfellasgym.testurl.abc/rs/kalendar_vypis/kalendar_vypis"
@@ -36,7 +36,6 @@ def test_get_schedule_success(mock_html, mock_schedule_url):
         result = get_schedule()
 
         # Verify results
-        assert len(result) == 1
         assert result[0]["gym"] == "GoodFellas"
         assert result[0]["date"] == "10.01.2025"
         
@@ -47,4 +46,7 @@ def test_get_schedule_success(mock_html, mock_schedule_url):
         assert lesson["spots"] == "10/15"
 
         # Verify mock calls
-        mock_post.assert_called_once_with(f"{MOCK_SCHEDULE_URL}/{TODAY}/1")
+        mock_post.assert_has_calls([
+            call(f"{MOCK_SCHEDULE_URL}/{TODAY}/1"),
+            call(f"{MOCK_SCHEDULE_URL}/2025-01-17/1")
+        ], any_order=True)

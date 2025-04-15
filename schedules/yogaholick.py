@@ -13,17 +13,19 @@ def get_schedule():
     if not parse_from:
         return []
 
-    parse_from = get_date_string(parse_from)
-    view_mode = "7-days"
-    response = requests.post(SCHEDULE_API_URL, files=[
-        ("date", (None, parse_from)),
-        ("viewMode", (None, view_mode)),
-        ("page", (None, "0")),
-        ("filter.resource[0].id", (None, "25")),
-        ("filter.resource[0].type", (None, "1")),
-        ("includeColors", (None, "false")),
-    ])
-    parsed_schedules = parse_schedule(response.json())
+    dates_to_parse_from = [get_date_string(parse_from), get_date_string(parse_from + datetime.timedelta(days=7))]
+    parsed_schedules = []
+    for date_to_parse_from in dates_to_parse_from:
+        view_mode = "7-days"
+        response = requests.post(SCHEDULE_API_URL, files=[
+            ("date", (None, date_to_parse_from)),
+            ("viewMode", (None, view_mode)),
+            ("page", (None, "0")),
+            ("filter.resource[0].id", (None, "25")),
+            ("filter.resource[0].type", (None, "1")),
+            ("includeColors", (None, "false")),
+        ])
+        parsed_schedules.extend(parse_schedule(response.json()))
     return parsed_schedules
 
 def parse_schedule(schedules: dict):
