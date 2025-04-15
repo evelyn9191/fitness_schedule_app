@@ -8,3 +8,5 @@ google-auth-oauthlib
 google-api-python-client
 requests-html
 lxml-html-clean
+freezegun
+pytest
