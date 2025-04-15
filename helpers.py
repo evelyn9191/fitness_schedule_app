@@ -1,27 +1,26 @@
 import datetime
 import json
-import logging
 import os
 
 
-def get_next_schedule_start_date(gym_name: str, days_stored: int = 6) -> datetime.datetime | None:
-    last_run_date = load_last_run_details(gym_name)
+def get_next_schedule_start_date(gym_name: str) -> datetime.datetime | None:
+    last_run_date, last_lesson_date = load_last_run_details(gym_name)
     current_date = datetime.datetime.now().date()
-    stored_schedules_till = last_run_date.date() + datetime.timedelta(days=days_stored)
-    days_to_parse = current_date - stored_schedules_till
+    days_to_parse = current_date - last_lesson_date
     if days_to_parse > datetime.timedelta(days=0):
-        logging.info("Time to parse the schedule...")
-        start_parsing_from = stored_schedules_till + datetime.timedelta(days=1)
+        print("Time to parse the schedule...")
+        start_parsing_from = last_lesson_date + datetime.timedelta(days=1)
         future_date = max(start_parsing_from, current_date)
         return future_date.strftime("%Y-%m-%d")
-    logging.info("Skipping the parsing.")
+    print(f"Skipping the parsing for {gym_name}")
     return None
 
 
-def load_last_run_details(gym_name: str) -> datetime.datetime | None:
+def load_last_run_details(gym_name: str) -> tuple[datetime.datetime | None, datetime.date | None]:
     if os.path.exists('run_details.json'):
         with open('run_details.json', 'r') as file:
             run_details = json.load(file)
-            last_run_string = run_details.get(gym_name, '').split(" ")[0]
-            return datetime.datetime.strptime(last_run_string, "%Y-%m-%d")
-    return None
+            last_run_string = run_details[gym_name]["start"].split(" ")[0]
+            last_lesson_string = run_details[gym_name]["end"].split(" ")[0]
+            return datetime.datetime.strptime(last_run_string, "%Y-%m-%d"), datetime.datetime.strptime(last_lesson_string, "%Y-%m-%d").date()
+    return None, None

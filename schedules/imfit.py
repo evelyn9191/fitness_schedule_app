@@ -8,7 +8,7 @@ GYM = "I'm Fit"
 IGNORED_LESSONS = ["Maminky", "Ladies Jumping"]
 
 def get_schedule():
-    parse_from = get_next_schedule_start_date(GYM, 3)
+    parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
         return []
 

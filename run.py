@@ -14,18 +14,37 @@ def run():
 
     service = get_calendar_service()
     sync_lessons_to_calendar(service, all_schedules)
-    gym_schedules_synced = set(schedule['gym'] for schedule in all_schedules)
-    save_run_details(gym_schedules_synced)
+    save_run_details(all_schedules)
 
-def save_run_details(gyms: set) -> None:
-    last_run_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    this_run_details = {gym: last_run_time for gym in gyms}
+def save_run_details(all_schedules: list) -> None:
+    gym_last_lesson_pair = get_last_lesson_date(all_schedules)
+    last_run = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open('run_details.json', 'r+w') as file:
         previous_run_details = json.load(file)
-        run_details = {**previous_run_details, **this_run_details}
-        json.dump(run_details, file, indent=4)
-    print(f"Run details saved: {last_run_time}")
+        for gym, last_lesson in gym_last_lesson_pair.items():
+            previous_run_details[gym]["start"] = last_run
+            if last_lesson:
+                previous_run_details[gym]["end"] = last_lesson
+            else:
+                previous_run_details[gym]["end"] = last_run
+        json.dump(previous_run_details, file, indent=4)
+    print(f"Run details saved:\n", previous_run_details)
 
+def get_last_lesson_date(all_schedules: list) -> dict:
+    gym_last_lesson_pair = {}
+    for lesson in all_schedules:
+        gym = ""
+        last_lesson_date = ""
+        if not gym:
+            gym = lesson['gym']
+            last_lesson_date = lesson['date']
+        elif gym != lesson['gym']:
+            gym_last_lesson_pair = {gym: last_lesson_date}
+        else:
+            if datetime.datetime.strptime(lesson['date'], "%Y-%m-%d") > datetime.datetime.strptime(last_lesson_date, "%Y-%m-%d"):
+                last_lesson_date = lesson['date']
+        gym_last_lesson_pair[gym] = last_lesson_date
+    return gym_last_lesson_pair
 
 def get_all_schedules():
     schedule_functions = [
