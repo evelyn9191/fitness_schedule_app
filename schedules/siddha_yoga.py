@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 
 from helpers import get_next_schedule_start_date
@@ -10,7 +12,10 @@ def get_schedule():
     if not parse_from:
         return []
 
-    handler = ISportSystemSchedulesHandler(GYM, "siddha-yoga", parse_from)
-    response = requests.get(handler.schedule_url, params=handler.get_params(), headers=handler.generate_client_headers())
-    parsed_schedules = handler.parse_schedule(response.text)
+    dates_to_parse_from = [parse_from, parse_from + datetime.timedelta(days=7)]
+    parsed_schedules = []
+    for date in dates_to_parse_from:
+        handler = ISportSystemSchedulesHandler(GYM, "siddha-yoga", date)
+        response = requests.get(handler.schedule_url, params=handler.get_params(), headers=handler.generate_client_headers())
+        parsed_schedules.extend(handler.parse_schedule(response.text))
     return parsed_schedules

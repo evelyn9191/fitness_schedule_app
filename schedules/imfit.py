@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-from helpers import get_next_schedule_start_date, get_date_string
+from helpers import get_next_schedule_start_date
 
 SCHEDULE_URL = "https://liberec.imfit.cz/SkupinoveLekce.aspx"
 GYM = "I'm Fit"

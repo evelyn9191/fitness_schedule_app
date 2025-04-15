@@ -593,3 +593,4 @@ cython_debug/
 # Custom files that don't need to be shared
 credentials.json
 timetable.html
+.codeiumignore

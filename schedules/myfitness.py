@@ -12,6 +12,8 @@ LOGIN_URL = "https://www.supersaas.cz/schedule/login/jumping-broumovska/rezervac
 SCHEDULE_URL = "https://www.supersaas.cz/schedule/jumping-broumovska/rezervace"
 GYM = "MyFitness"
 IGNORED_LESSONS = ["CARDIO STEP", "JUMPING", "CARDIO STEP"]
+USERNAME = os.getenv("MYFITNESS_USERNAME")
+PASSWORD = os.getenv("MYFITNESS_PASSWORD")
 
 def get_schedule():
     parse_from = get_next_schedule_start_date(GYM)
@@ -21,8 +23,8 @@ def get_schedule():
     session = HTMLSession()
     session.get(LOGIN_URL)
     login_data = {
-        "name": os.getenv("MYFITNESS_USERNAME"),
-        "password": os.getenv("MYFITNESS_PASSWORD"),
+        "name": USERNAME,
+        "password": PASSWORD,
         "remember": "K",
         "button": ""
     }
@@ -44,6 +46,7 @@ def get_schedule():
 def parse_schedule(response_text: str):
     body = response_text.split("var app=")[1].split("var busy_color")[0]
     all_sessions = json.loads(body)
+    print(all_sessions)
 
     days = []
     lessons_by_dates = {}
