@@ -1,9 +1,11 @@
+import datetime
+
 from bs4 import BeautifulSoup
 
 IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga"]
 
 class ISportSystemSchedulesHandler:
-    def __init__(self, gym: str, domain_name: str, parse_from: str):
+    def __init__(self, gym: str, domain_name: str, parse_from: datetime.date):
         self.gym = gym
         self.domain_name = domain_name
         self.parse_from = parse_from
@@ -18,11 +20,10 @@ class ISportSystemSchedulesHandler:
         }
 
     def get_params(self) -> dict:
-        year, month, day = self.parse_from.split("-")
         return {
-            "day": day,
-            "month": month,
-            "year": year,
+            "day": self.parse_from.day,
+            "month": self.parse_from.month,
+            "year": self.parse_from.year,
             "id_sport": 5,
             "event": "pageLoad",
             "tab_type": "activity",

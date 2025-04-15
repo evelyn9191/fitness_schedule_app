@@ -3,6 +3,7 @@ import json
 import logging
 
 from gcal_updater import get_calendar_service, sync_lessons_to_calendar
+from helpers import DATE_FORMAT
 from schedules import goodfellas, bevondrsfull, imfit, yogaholick, siddha_yoga, moony_yoga, myfitness
 
 
@@ -41,7 +42,7 @@ def get_last_lesson_date(all_schedules: list) -> dict:
         elif gym != lesson['gym']:
             gym_last_lesson_pair = {gym: last_lesson_date}
         else:
-            if datetime.datetime.strptime(lesson['date'], "%Y-%m-%d") > datetime.datetime.strptime(last_lesson_date, "%Y-%m-%d"):
+            if datetime.datetime.strptime(lesson['date'], DATE_FORMAT) > datetime.datetime.strptime(last_lesson_date, DATE_FORMAT):
                 last_lesson_date = lesson['date']
         gym_last_lesson_pair[gym] = last_lesson_date
     return gym_last_lesson_pair

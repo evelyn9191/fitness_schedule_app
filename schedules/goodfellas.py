@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-from helpers import get_next_schedule_start_date
+from helpers import get_next_schedule_start_date, get_date_string
 
 SCHEDULE_URL = "https://goodfellasgym.inrs.cz/rs/kalendar_vypis/kalendar_vypis"
 GYM = "GoodFellas"
@@ -12,6 +12,7 @@ def get_schedule():
     if not parse_from:
         return []
 
+    parse_from = get_date_string(parse_from)
     schedule_url = f"{SCHEDULE_URL}/{parse_from}/1"
     response = requests.post(schedule_url)
     parsed_schedules = parse_schedule(response.text)

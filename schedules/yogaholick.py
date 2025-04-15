@@ -3,7 +3,7 @@ import datetime
 import pytz
 import requests
 
-from helpers import get_next_schedule_start_date
+from helpers import get_next_schedule_start_date, get_date_string
 
 SCHEDULE_API_URL = "https://yogaholick.reenio.cz/cs/api/Term/List"
 GYM = "Yogaholick"
@@ -13,6 +13,7 @@ def get_schedule():
     if not parse_from:
         return []
 
+    parse_from = get_date_string(parse_from)
     view_mode = "7-days"
     response = requests.post(SCHEDULE_API_URL, files=[
         ("date", (None, parse_from)),

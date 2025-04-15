@@ -2,8 +2,9 @@ import datetime
 import json
 import os
 
+DATE_FORMAT = "%Y-%m-%d"
 
-def get_next_schedule_start_date(gym_name: str) -> datetime.datetime | None:
+def get_next_schedule_start_date(gym_name: str) -> datetime.date | None:
     last_run_date, last_lesson_date = load_last_run_details(gym_name)
     current_date = datetime.datetime.now().date()
     days_to_parse = current_date - last_lesson_date
@@ -11,10 +12,9 @@ def get_next_schedule_start_date(gym_name: str) -> datetime.datetime | None:
         print("Time to parse the schedule...")
         start_parsing_from = last_lesson_date + datetime.timedelta(days=1)
         future_date = max(start_parsing_from, current_date)
-        return future_date.strftime("%Y-%m-%d")
+        return future_date
     print(f"Skipping the parsing for {gym_name}")
     return None
-
 
 def load_last_run_details(gym_name: str) -> tuple[datetime.datetime | None, datetime.date | None]:
     if os.path.exists('run_details.json'):
@@ -22,5 +22,8 @@ def load_last_run_details(gym_name: str) -> tuple[datetime.datetime | None, date
             run_details = json.load(file)
             last_run_string = run_details[gym_name]["start"].split(" ")[0]
             last_lesson_string = run_details[gym_name]["end"].split(" ")[0]
-            return datetime.datetime.strptime(last_run_string, "%Y-%m-%d"), datetime.datetime.strptime(last_lesson_string, "%Y-%m-%d").date()
+            return datetime.datetime.strptime(last_run_string, DATE_FORMAT), datetime.datetime.strptime(last_lesson_string, DATE_FORMAT).date()
     return None, None
+
+def get_date_string(date: datetime.date) -> str:
+    return date.strftime(DATE_FORMAT)

@@ -11,7 +11,6 @@ def get_schedule():
         return []
 
     handler = ISportSystemSchedulesHandler(GYM, "siddha-yoga", parse_from)
-
     response = requests.get(handler.schedule_url, params=handler.get_params(), headers=handler.generate_client_headers())
     parsed_schedules = handler.parse_schedule(response.text)
     return parsed_schedules
