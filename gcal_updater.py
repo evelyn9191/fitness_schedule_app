@@ -25,8 +25,8 @@ def to_rfc_datetime(date_str, time_str):
     tz = pytz.timezone("Europe/Prague")
     return tz.localize(start).isoformat(), tz.localize(end).isoformat()
 
-def sync_lessons_to_calendar(service, data):
-    for day in data:
+def sync_lessons_to_calendar(service, all_schedules: list) -> None:
+    for day in all_schedules:
         logging.info("Creating calendar events for gym %s on %s", day.get("gym"), day["date"])
         print(day)
         for lesson in day['lessons']:
