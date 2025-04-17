@@ -2,7 +2,7 @@ import datetime
 
 from bs4 import BeautifulSoup
 
-IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga"]
+IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI"]
 
 class ISportSystemSchedulesHandler:
     def __init__(self, gym: str, domain_name: str, parse_from: datetime.date):
@@ -53,7 +53,10 @@ class ISportSystemSchedulesHandler:
 
             capacity = 'free' if 'volno' in row.get_text().lower() else 'full'
 
-            current_date = info.get('Datum', "").split("\xa0")[1]
+            if "Datum" not in info:
+                continue
+
+            current_date = info["Datum"].split("\xa0")[1]
             if not current_date:
                 continue
 
