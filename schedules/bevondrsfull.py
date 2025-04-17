@@ -44,10 +44,13 @@ def parse_schedule(html):
             if lesson["name"] in IGNORED_LESSONS:
                 continue
 
+            lesson["trainer"] = [trainer.get_text(strip=True) for trainer in lesson_element.find_all("b")]
+            if 'Nelze využít kartu Multisport' in lesson["trainer"]:
+                continue
+
             # Parse time, name, trainers, and spots
             time_and_name = lesson_element.find("span").get_text(" ", strip=True).split()
             lesson["time"] = f"{time_and_name[0]}-{time_and_name[2]}"
-            lesson["trainer"] = [trainer.get_text(strip=True) for trainer in lesson_element.find_all("b")]
 
             # Extract available spots
             spots_element = lesson_element.find("span", class_="places")
