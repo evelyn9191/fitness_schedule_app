@@ -27,7 +27,7 @@ def parse_schedule(html):
         class_name_tag = card.find('span', id=lambda x: x and 'lblSkupPopis' in x)
         class_name = class_name_tag.text.strip() if class_name_tag else "Unknown Class"
 
-        if class_name in IGNORED_LESSONS:
+        if class_name in IGNORED_LESSONS or "zrušeno" in class_name:
             continue
 
         time_tag = card.find('span', id=lambda x: x and 'lblSkupCasOdDo' in x)
