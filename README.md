@@ -6,15 +6,15 @@ A Python application that aggregates fitness class schedules from various gyms a
 
 - Fetches class schedules from multiple fitness centers
 - Syncs class schedules to Google Calendar
-- Creates a browsable HTML timetable
-- Supports multiple gym providers:
-  - GoodFellas
-  - Bevondrsfull
+
+It supports multiple gym providers:
+  - GoodFellas (inrs.cz)
+  - Bevondrsfull (boofit.net)
   - ImFit
-  - YogaHolick
-  - Siddha Yoga
-  - Moony Yoga
-  - MyFitness
+  - YogaHolick (reenio)
+  - Siddha Yoga (isportsystem)
+  - Moony Yoga (isportsystem)
+  - MyFitness (supersaas)
 
 ## Setup
 
@@ -46,21 +46,6 @@ Use with care, don't overload the gyms with requests! :pray:
 - Google Calendar API credentials
 - Dependencies listed in `requirements.txt`
 
-## Project Structure
-
-- `run.py` - Main application entry point
-- `gcal_updater.py` - Google Calendar integration
-- `schedules/` - Individual gym schedule scrapers
-- `tests/` - Test suite
-- `helpers.py` - Utility functions
-
 ## Environment Variables
 
-Create a `.env` file with the following variables:
-- Google Calendar configuration
-- API credentials
-- Other configuration parameters
-
-## License
-
-This project is proprietary and confidential.
+Create a `.env` file with envvars you need including those stated in the [.env.sample](.env.sample) file.
