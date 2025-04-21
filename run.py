@@ -2,7 +2,7 @@ import datetime
 import json
 import logging
 
-from gcal_updater import get_calendar_service, sync_lessons_to_calendar
+from gcal_updater import GoogleCalendarClient
 from helpers import DATE_FORMAT
 from schedules import goodfellas, bevondrsfull, imfit, yogaholick, siddha_yoga, moony_yoga, myfitness
 
@@ -13,8 +13,8 @@ def run():
         logging.info("No schedules to update.")
         return
 
-    service = get_calendar_service()
-    sync_lessons_to_calendar(service, all_schedules)
+    GoogleCalendarClient().sync_lessons_to_calendar(all_schedules)
+
     save_run_details(all_schedules)
 
 def save_run_details(all_schedules: list) -> None:
