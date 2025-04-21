@@ -40,14 +40,15 @@ def get_last_lesson_date(all_schedules: list) -> dict:
     for lesson in all_schedules:
         gym = ""
         last_lesson_date = ""
+        lesson_date = datetime.datetime.strptime(lesson['date'], DATE_FORMAT)
         if not gym:
             gym = lesson['gym']
-            last_lesson_date = lesson['date']
+            last_lesson_date = lesson_date
         elif gym != lesson['gym']:
             gym_last_lesson_pair = {gym: last_lesson_date}
         else:
-            if datetime.datetime.strptime(lesson['date'], DATE_FORMAT) > datetime.datetime.strptime(last_lesson_date, DATE_FORMAT):
-                last_lesson_date = lesson['date']
+            if lesson_date > last_lesson_date:
+                last_lesson_date = lesson_date
         gym_last_lesson_pair[gym] = datetime.datetime.strptime(last_lesson_date, DATE_FORMAT)
     return gym_last_lesson_pair
 

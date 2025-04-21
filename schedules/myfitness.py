@@ -1,10 +1,11 @@
 import datetime
 import json
 import os
+
 from requests_html import HTMLSession
+from dotenv import load_dotenv
 
 from helpers import get_next_schedule_start_date
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -55,13 +56,13 @@ def parse_schedule(response_text: str):
         if name in IGNORED_LESSONS:
             continue
 
-        start_datetime = datetime.datetime.fromtimestamp(start)
+        start_datetime = datetime.datetime.fromtimestamp(start, tz=datetime.timezone.utc)
         current_date = start_datetime.date().strftime("%d.%m.%Y")
         if current_date not in lessons_by_dates:
             lessons_by_dates[current_date] = []
 
         spots = f"{booked_spots}/{max_spots}"
-        end_datetime = datetime.datetime.fromtimestamp(end)
+        end_datetime = datetime.datetime.fromtimestamp(end, tz=datetime.timezone.utc)
         time = f"{start_datetime.strftime('%-H:%M')}-{end_datetime.strftime('%-H:%M')}"
         lessons_by_dates[current_date].append({"time": time,
                                                "name": name,
