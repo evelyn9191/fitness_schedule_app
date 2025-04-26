@@ -19,7 +19,7 @@ def run():
 
 def save_run_details(all_schedules: list) -> None:
     gym_last_lesson_pair = get_last_lesson_date(all_schedules)
-    last_run = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    last_run = datetime.datetime.now().strftime("%Y-%m-%d")
     with open('run_details.json', 'r') as file:
         previous_run_details = json.load(file)
 

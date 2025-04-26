@@ -27,13 +27,18 @@ def parse_schedule(html):
     # Extract lessons for each day
     days = []
     day_containers = soup.find_all("div", class_="col7-sm-7")
+    days_stored = []
     for day_container in day_containers:
         day = {}
 
         # Find the date for the day
         date_heading = day_container.find("dt")
         if date_heading:
-            day["date"] = date_heading.find("strong").text.strip()
+            date = date_heading.find("strong").text.strip()
+            if date in days_stored:
+                continue
+            days_stored.append(date)
+            day["date"] = date
 
         # Find lessons for the day
         lessons = []

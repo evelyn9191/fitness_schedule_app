@@ -17,10 +17,6 @@ USERNAME = os.getenv("MYFITNESS_USERNAME")
 PASSWORD = os.getenv("MYFITNESS_PASSWORD")
 
 def get_schedule():
-    parse_from = get_next_schedule_start_date(GYM)
-    if not parse_from:
-        return []
-
     session = HTMLSession()
     session.get(LOGIN_URL)
     login_data = {
@@ -49,6 +45,8 @@ def parse_schedule(response_text: str):
     all_sessions = json.loads(body)
     print(all_sessions)
 
+    parse_from = get_next_schedule_start_date(GYM)
+
     days = []
     lessons_by_dates = {}
     for session in all_sessions:
@@ -57,7 +55,11 @@ def parse_schedule(response_text: str):
             continue
 
         start_datetime = datetime.datetime.fromtimestamp(start, tz=datetime.timezone.utc)
+        if start_datetime.date() < parse_from:
+            continue
+
         current_date = start_datetime.date().strftime("%d.%m.%Y")
+
         if current_date not in lessons_by_dates:
             lessons_by_dates[current_date] = []
 
