@@ -7,6 +7,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 from dotenv import load_dotenv
+from googleapiclient.errors import HttpError
 
 load_dotenv()
 
@@ -56,10 +57,14 @@ class GoogleCalendarClient:
                     'start': {'dateTime': start_iso, 'timeZone': 'Europe/Prague'},
                     'end': {'dateTime': end_iso, 'timeZone': 'Europe/Prague'},
                 }
-                self.service.events().insert(
-                    calendarId=self.calendar_id,
-                    body=event_body
-                ).execute()
+                try:
+                    self.service.events().insert(
+                        calendarId=self.calendar_id,
+                        body=event_body
+                    ).execute()
+                except HttpError as e:
+                    print("Could not create event with %s due to %s", event_body, e)
+
                 print(f"Created: {lesson['name']} on {day['date']}")
 
     @staticmethod
