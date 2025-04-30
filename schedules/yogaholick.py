@@ -57,6 +57,8 @@ def parse_schedule(schedules: dict):
     for date, lessons in lessons_by_dates.items():
         days.append({"date": date, "gym": GYM, "lessons": lessons})
 
+    print(days)
+
     return days
 
 def _convert_to_prague_time(utc_str: str) -> str:

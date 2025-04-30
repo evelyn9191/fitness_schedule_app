@@ -55,4 +55,6 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list:
         })
         days.append(day_entry)
 
+    print(days)
+
     return days
