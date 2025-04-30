@@ -56,6 +56,9 @@ class ISportSystemSchedulesHandler:
             if "Datum" not in info:
                 continue
 
+            if capacity == 'full' and self.gym == "Siddha Yoga":
+                continue
+
             current_date = info["Datum"].split("\xa0")[1]
             if not current_date:
                 continue
