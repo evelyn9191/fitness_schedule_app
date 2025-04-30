@@ -32,17 +32,20 @@ def get_schedule():
         "Origin": "https://www.supersaas.cz",
         "Content-Type": "application/x-www-form-urlencoded",
     }
-    response = session.post(
+    session.post(
         LOGIN_URL,
         data=login_data,
         headers=headers
     )
+    start_date, end_date = generate_schedule_dates()
+    print("Querying sessions for date range", start_date, end_date)
+    response = session.get(
+        f"https://www.supersaas.cz/ajax/capacity/27740?token=42786&afrom={start_date}&ato={end_date}&ad=r&efrom={start_date}&eto={end_date}&ed=r")
     parsed_schedules = parse_schedule(response.text)
     return parsed_schedules
 
 def parse_schedule(response_text: str):
-    body = response_text.split("var app=")[1].split("var busy_color")[0]
-    all_sessions = json.loads(body)
+    all_sessions = json.loads(response_text)["app"]
     print(all_sessions)
 
     parse_from = get_next_schedule_start_date(GYM)
@@ -75,4 +78,15 @@ def parse_schedule(response_text: str):
     for date, lessons in lessons_by_dates.items():
         days.append({"date": date, "gym": GYM, "lessons": lessons})
 
+    print(days)
+
     return days
+
+
+def generate_schedule_dates() -> tuple[str, str]:
+    today = datetime.date.today()
+    first_day_of_month = today.replace(day=1)
+    last_day_of_next_month = (first_day_of_month.replace(month=(today.month % 12) + 2, day=1) - datetime.timedelta(days=1))
+    start_date = first_day_of_month - datetime.timedelta(days=first_day_of_month.weekday())
+    end_date = last_day_of_next_month + datetime.timedelta(days=(6 - last_day_of_next_month.weekday()))
+    return start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')
