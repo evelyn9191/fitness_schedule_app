@@ -3,7 +3,7 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from helpers import get_next_schedule_start_date, get_date_string
+from helpers import get_next_schedule_start_date, get_date_string, DATE_FORMAT_CZ
 
 SCHEDULE_URL = "https://cz.boofit.net/bevondrsfull/rozvrh-a-rezervace/aktualni-rozvrh/1071/"
 GYM = "Be Vondrsfull"
@@ -14,14 +14,14 @@ def get_schedule():
     if not parse_from:
         return []
 
-    dates_to_parse_from = [get_date_string(parse_from), get_date_string(parse_from + datetime.timedelta(days=7))]
+    dates_to_parse_from = [parse_from, parse_from + datetime.timedelta(days=7)]
     parsed_schedules = []
     for date_to_parse_from in dates_to_parse_from:
-        response = requests.get(SCHEDULE_URL + date_to_parse_from)
-        parsed_schedules.extend(parse_schedule(response.text))
+        response = requests.get(SCHEDULE_URL + get_date_string(date_to_parse_from, "%d-%m-%Y"))
+        parsed_schedules.extend(parse_schedule(response.text, date_to_parse_from))
     return parsed_schedules
 
-def parse_schedule(html):
+def parse_schedule(html: str, date_to_parse_from: datetime.date) -> list:
     soup = BeautifulSoup(html, "html.parser")
 
     # Extract lessons for each day
@@ -35,7 +35,8 @@ def parse_schedule(html):
         date_heading = day_container.find("dt")
         if date_heading:
             date = date_heading.find("strong").text.strip()
-            if date in days_stored:
+            if date in days_stored or datetime.datetime.strptime(date, DATE_FORMAT_CZ).date() < date_to_parse_from:
+                print("Skipping", date)
                 continue
             days_stored.append(date)
             day["date"] = date
@@ -66,5 +67,5 @@ def parse_schedule(html):
         day["lessons"] = lessons
         day["gym"] = GYM
         days.append(day)
-    print(days)
+
     return days

@@ -5,7 +5,7 @@ import os
 from requests_html import HTMLSession
 from dotenv import load_dotenv
 
-from helpers import get_next_schedule_start_date
+from helpers import get_next_schedule_start_date, DATE_FORMAT_CZ
 
 load_dotenv()
 
@@ -58,7 +58,7 @@ def parse_schedule(response_text: str):
         if start_datetime.date() < parse_from:
             continue
 
-        current_date = start_datetime.date().strftime("%d.%m.%Y")
+        current_date = start_datetime.date().strftime(DATE_FORMAT_CZ)
 
         if current_date not in lessons_by_dates:
             lessons_by_dates[current_date] = []

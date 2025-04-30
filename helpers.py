@@ -2,7 +2,8 @@ import datetime
 import json
 import os
 
-DATE_FORMAT = "%Y-%m-%d"
+DATE_FORMAT_US = "%Y-%m-%d"
+DATE_FORMAT_CZ = "%d.%m.%Y"
 
 def get_next_schedule_start_date(gym_name: str) -> datetime.date:
     last_run_date, last_lesson_date = load_last_run_details(gym_name)
@@ -15,8 +16,8 @@ def load_last_run_details(gym_name: str) -> tuple[datetime.datetime | None, date
     if os.path.exists('run_details.json'):
         with open('run_details.json', 'r') as file:
             run_details = json.load(file)
-            return datetime.datetime.strptime(run_details[gym_name]["start"], DATE_FORMAT), datetime.datetime.strptime(run_details[gym_name]["end"], DATE_FORMAT).date()
+            return datetime.datetime.strptime(run_details[gym_name]["start"], DATE_FORMAT_US), datetime.datetime.strptime(run_details[gym_name]["end"], DATE_FORMAT_US).date()
     return None, None
 
-def get_date_string(date: datetime.date) -> str:
-    return date.strftime(DATE_FORMAT)
+def get_date_string(date: datetime.date, format: str = DATE_FORMAT_US) -> str:
+    return date.strftime(format)

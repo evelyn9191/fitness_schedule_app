@@ -3,7 +3,7 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from helpers import get_next_schedule_start_date
+from helpers import get_next_schedule_start_date, DATE_FORMAT_CZ
 
 SCHEDULE_URL = "https://liberec.imfit.cz/SkupinoveLekce.aspx"
 GYM = "I'm Fit"
@@ -32,7 +32,7 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list:
         date_tag = card.find('input', {'name': lambda x: x and 'hfDatum2' in x})
         date = date_tag['value'].split()[0] if date_tag else "Unknown Date"
 
-        if datetime.datetime.strptime(date, "%d.%m.%Y").date() < parse_from:
+        if datetime.datetime.strptime(date, DATE_FORMAT_CZ).date() < parse_from:
             continue
 
         time_tag = card.find('span', id=lambda x: x and 'lblSkupCasOdDo' in x)
