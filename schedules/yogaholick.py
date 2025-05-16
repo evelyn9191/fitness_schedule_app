@@ -41,6 +41,9 @@ def parse_schedule(schedules: dict):
         if current_date not in lessons_by_dates:
             lessons_by_dates[current_date] = []
 
+        if not accepts_multisport:
+            continue
+
         lesson = {}
 
         start_time = _convert_to_prague_time(event["start"])
@@ -73,3 +76,9 @@ def _get_lesson_date(event: dict) -> str:
     lesson_date = event["start"].split("T")[0]
     year, month, day = lesson_date.split("-")
     return f"{day}.{month}.{year}"
+
+def accepts_multisport(event: dict) -> bool:
+    for priceVariant in event["priceVariants"]:
+        if priceVariant["price"] == 0:
+            return True
+    return False
