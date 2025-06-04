@@ -16,8 +16,15 @@ def load_last_run_details(gym_name: str) -> tuple[datetime.datetime | None, date
     if os.path.exists('run_details.json'):
         with open('run_details.json', 'r') as file:
             run_details = json.load(file)
-            return datetime.datetime.strptime(run_details[gym_name]["start"], DATE_FORMAT_US), datetime.datetime.strptime(run_details[gym_name]["end"], DATE_FORMAT_US).date()
-    return None, None
+            try:
+                last_run_date = datetime.datetime.strptime(run_details[gym_name]["start"], DATE_FORMAT_US)
+            except KeyError:
+                last_run_date = datetime.datetime.now() - datetime.timedelta(days=-1)
+            try:
+                last_lesson_date = datetime.datetime.strptime(run_details[gym_name]["end"], DATE_FORMAT_US).date()
+            except KeyError:
+                last_lesson_date = datetime.date.today()
+    return last_run_date, last_lesson_date
 
 def get_date_string(date: datetime.date, format: str = DATE_FORMAT_US) -> str:
     return date.strftime(format)
