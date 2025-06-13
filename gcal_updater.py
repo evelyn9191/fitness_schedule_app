@@ -44,6 +44,10 @@ class GoogleCalendarClient:
         return event_items
 
     def sync_lessons_to_calendar(self, all_schedules: list) -> None:
+        batch = self.service.new_batch_http_request()
+        event_count = 0
+        max_batch_size = 50
+
         for day in all_schedules:
             logging.info("Creating calendar events for gym %s on %s", day.get("gym"), day["date"])
             print(day)
@@ -57,15 +61,37 @@ class GoogleCalendarClient:
                     'start': {'dateTime': start_iso, 'timeZone': 'Europe/Prague'},
                     'end': {'dateTime': end_iso, 'timeZone': 'Europe/Prague'},
                 }
-                try:
+                
+                def callback(request_id, response, exception):
+                    if exception is not None:
+                        print(f"Error creating event: {exception}")
+                    else:
+                        print(f"Created: {response.get('summary')} on {response.get('start', {}).get('dateTime', '').split('T')[0]}")
+                
+                batch.add(
                     self.service.events().insert(
                         calendarId=self.calendar_id,
                         body=event_body
-                    ).execute()
-                except HttpError as e:
-                    print("Could not create event with %s due to %s", event_body, e)
+                    ),
+                    callback=callback
+                )
+                event_count += 1
+                
+                if event_count >= max_batch_size:
+                    print("Making batch request...")
+                    try:
+                        batch.execute()
+                    except HttpError as e:
+                        print(f"Batch request failed: {e}")
 
-                print(f"Created: {lesson['name']} on {day['date']}")
+                    batch = self.service.new_batch_http_request()
+                    event_count = 0
+        
+        if event_count > 0:
+            try:
+                batch.execute()
+            except HttpError as e:
+                print(f"Batch request failed: {e}")
 
     @staticmethod
     def _to_rfc_datetime(date_str, time_str):
