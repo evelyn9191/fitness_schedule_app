@@ -7,7 +7,7 @@ from schedules import moodyoga, yogakarlin, euforie, form_factory
 
 DAY_TO_TRACK = datetime.date.today() + datetime.timedelta(days=1)
 FROM_TIME = datetime.time(7, 0)
-TO_TIME = datetime.time(14, 30)
+TO_TIME = datetime.time(17, 30)
 
 def run():
     all_schedules = get_all_schedules()
