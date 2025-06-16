@@ -1,9 +1,8 @@
 import datetime
-import json
 import logging
 
 from gcal_updater import GoogleCalendarClient
-from helpers import DATE_FORMAT_US, DATE_FORMAT_CZ
+from helpers import DATE_FORMAT_CZ
 from schedules import moodyoga, yogakarlin, euforie, form_factory
 
 DAY_TO_TRACK = datetime.date.today() + datetime.timedelta(days=1)
