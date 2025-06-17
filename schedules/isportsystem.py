@@ -2,7 +2,7 @@ import datetime
 
 from bs4 import BeautifulSoup
 
-IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI"]
+IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI", "Open shala"]
 
 class ISportSystemSchedulesHandler:
     def __init__(self, gym: str, domain_name: str, parse_from: datetime.date):

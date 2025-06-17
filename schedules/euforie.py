@@ -8,7 +8,7 @@ from helpers import get_next_schedule_start_date, get_date_string
 
 SCHEDULE_URL = "https://rezervace.euforie.cz/cs/euforie/rozvrh-hodin"
 GYM = "Euforie Karlin"
-IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné"]
+IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné", "Trampolínky"]
 
 
 # ajax=vytvor-tabulku-rozvrh-hodin&limit=0&nacteno=0&pobocka=3&datum=Datum+...&skupina=
