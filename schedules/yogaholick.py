@@ -9,6 +9,7 @@ SCHEDULE_API_URL = "https://yogaholick.reenio.cz/cs/api/Term/List"
 GYM = "Yogaholick"
 
 def get_schedule():
+    print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
         return []
@@ -59,8 +60,6 @@ def parse_schedule(schedules: dict):
 
     for date, lessons in lessons_by_dates.items():
         days.append({"date": date, "gym": GYM, "lessons": lessons})
-
-    print(days)
 
     return days
 

@@ -13,6 +13,7 @@ IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné", "Tramp
 
 # ajax=vytvor-tabulku-rozvrh-hodin&limit=0&nacteno=0&pobocka=3&datum=Datum+...&skupina=
 def get_schedule():
+    print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
         return []

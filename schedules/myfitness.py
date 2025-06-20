@@ -17,6 +17,7 @@ USERNAME = os.getenv("MYFITNESS_USERNAME")
 PASSWORD = os.getenv("MYFITNESS_PASSWORD")
 
 def get_schedule():
+    print(f"Getting schedule from {GYM}...")
     session = HTMLSession()
     session.get(LOGIN_URL)
     login_data = {
@@ -46,7 +47,6 @@ def get_schedule():
 
 def parse_schedule(response_text: str):
     all_sessions = json.loads(response_text)["app"]
-    print(all_sessions)
 
     parse_from = get_next_schedule_start_date(GYM)
 
@@ -77,8 +77,6 @@ def parse_schedule(response_text: str):
 
     for date, lessons in lessons_by_dates.items():
         days.append({"date": date, "gym": GYM, "lessons": lessons})
-
-    print(days)
 
     return days
 

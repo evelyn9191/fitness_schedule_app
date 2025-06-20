@@ -10,6 +10,7 @@ GYM = "I'm Fit"
 IGNORED_LESSONS = ["Maminky", "Ladies Jumping"]
 
 def get_schedule():
+    print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
     response = requests.get(SCHEDULE_URL)
     parsed_schedules = parse_schedule(response.text, parse_from)
@@ -54,7 +55,5 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list:
             'trainer': [trainer],
         })
         days.append(day_entry)
-
-    print(days)
 
     return days

@@ -35,7 +35,6 @@ def filter_schedules_by_day(all_schedules: list) -> list[dict]:
                     day_lessons.append(day_lesson)
             day_schedule['lessons'] = day_lessons
             filtered_schedules.append(day_schedule)
-    print(filtered_schedules)
     return filtered_schedules
 
 def get_all_schedules():

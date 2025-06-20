@@ -31,6 +31,8 @@ class ISportSystemSchedulesHandler:
         }
 
     def parse_schedule(self, html):
+        print(f"Getting schedule from {self.gym}...")
+
         soup = BeautifulSoup(html, "html.parser")
 
         rows = soup.find_all('a', id=lambda x: x and x.startswith("id_activity_term_"))
@@ -79,5 +81,4 @@ class ISportSystemSchedulesHandler:
         for date, lessons in lessons_by_dates.items():
             days.append({"date": date, "gym": self.gym, "lessons": lessons})
 
-        print(days)
         return days

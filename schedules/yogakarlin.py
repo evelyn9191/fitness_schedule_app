@@ -9,6 +9,7 @@ GYM = "Yoga Karlin"
 
 
 def get_schedule():
+    print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
         return []

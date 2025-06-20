@@ -10,6 +10,7 @@ GYM = "GoodFellas"
 IGNORED_LESSONS = ["OPEN", "GF Maminky s dětmi", "GF Vzpírání"]
 
 def get_schedule():
+    print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
         return []
@@ -59,5 +60,5 @@ def parse_schedule(html):
         if lessons:
             day_info["lessons"] = lessons
             days.append(day_info)
-    print(days)
+
     return days
