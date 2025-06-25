@@ -5,7 +5,7 @@ from typing import Any
 import requests
 from bs4 import BeautifulSoup
 
-from helpers import get_next_schedule_start_date, get_date_string, DATE_FORMAT_CZ
+from helpers import get_next_schedule_start_date, DATE_FORMAT_CZ
 
 SCHEDULE_URL = "https://bevondrsfull.clubspire.cz/timeline/week?criteriaTimestamp&resetFilter=true#timelineCalendar"
 GYM = "Be Vondrsfull"
