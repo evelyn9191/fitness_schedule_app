@@ -31,8 +31,6 @@ class ISportSystemSchedulesHandler:
         }
 
     def parse_schedule(self, html):
-        print(f"Getting schedule from {self.gym}...")
-
         soup = BeautifulSoup(html, "html.parser")
 
         rows = soup.find_all('a', id=lambda x: x and x.startswith("id_activity_term_"))
