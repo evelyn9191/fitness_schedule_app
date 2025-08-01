@@ -34,19 +34,36 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list[dict[str, Any]]
     date_map = {}
 
     for day_elem in day_elements:
-        day_abbr = day_elem['id'].split('_')[-1]  # mon, tue, etc.
-        date_text = day_elem.find('span', class_='day').get_text(strip=True)
-        # Extract date from text like "Mon 30.6."
-        date_str = re.search(r'\d+\.\d+\.', date_text).group(0)
-        day, month, _ = date_str.split('.')
+        day_abbr = day_elem['id'].split('_')[-1]
+        date_span = day_elem.find('span', class_='day')
+        if not date_span:
+            continue
+            
+        date_text = date_span.get_text(strip=True)
+        date_match = re.search(r'(\d+)\.(\d+)\.', date_text)
+        if not date_match:
+            continue
+            
+        day, month = date_match.groups()
         year = datetime.date.today().year
-        date_map[day_abbr] = datetime.date(year, int(month), int(day))
+        
+        current_month = datetime.date.today().month
+        if int(month) < current_month and current_month > 10:
+            year += 1
+            
+        try:
+            date_map[day_abbr] = datetime.date(year, int(month), int(day))
+        except ValueError:
+            continue
 
     schedule = []
+    
     lesson_rows = soup.select('tr[data-parent-row-id]')
 
     for row in lesson_rows:
-        day_abbr = row['data-parent-row-id'].split('_')[-1]  # mon, tue, etc.
+        parent_row_id = row.get('data-parent-row-id', '')
+        day_abbr = parent_row_id.split('_')[-1] if '_' in parent_row_id else ''
+        
         if day_abbr not in date_map:
             continue
 
@@ -54,16 +71,12 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list[dict[str, Any]]
         if date < parse_from:
             continue
 
-        lesson_cells = row.find_all('td', class_=lambda c: c and 'a_' in c)
+        lesson_cells = row.find_all('td', class_=lambda c: c and any(c.startswith(prefix) for prefix in ['a_', 'b_', 'd_']) and 'empty' not in c)
 
         for cell in lesson_cells:
-            lesson = {
-                'date': date.strftime(DATE_FORMAT_CZ),
-                'gym': GYM,
-                'lessons': []
-            }
-
-            # Extract time from the tooltip
+            if 'disabled' in cell.get('class', []):
+                continue
+                
             tooltip = cell.find('div', class_='schedule_tooltip')
             if not tooltip:
                 continue
@@ -72,14 +85,17 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list[dict[str, Any]]
             if not time_info:
                 continue
 
-            time_start = time_info.find('div', class_='time start')
-            time_end = time_info.find('div', class_='time end')
+            time_start_elem = time_info.find('div', class_='time start')
+            time_end_elem = time_info.find('div', class_='time end')
 
-            if not time_start or not time_end:
+            if not time_start_elem or not time_end_elem:
                 continue
 
-            start_time = time_start.get_text(strip=True).strip(':')
-            end_time = time_end.get_text(strip=True).strip(':')
+            start_time_text = time_start_elem.get_text(strip=True)
+            end_time_text = time_end_elem.get_text(strip=True)
+            
+            start_time = re.sub(r'[^\d:]', '', start_time_text)
+            end_time = re.sub(r'[^\d:]', '', end_time_text)
 
             description = tooltip.find('div', class_='description')
             if not description:
@@ -89,28 +105,47 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list[dict[str, Any]]
             if not name_elem:
                 continue
 
-            lesson_name = name_elem.get_text(strip=True)
-            if any(ignored in lesson_name for ignored in IGNORED_LESSONS) or "Nelze využít kartu Multisport" in lesson_name:
+            lesson_name_full = name_elem.get_text(strip=True)
+            
+            if ' - ' in lesson_name_full:
+                lesson_name, trainer_part = lesson_name_full.split(' - ', 1)
+            else:
+                lesson_name = lesson_name_full
+                trainer_part = ""
+
+            if any(ignored in lesson_name for ignored in IGNORED_LESSONS):
                 continue
 
-            # Extract trainer
-            trainer_elem = description.find('a', class_='ajax_popup_trigger')
-            trainer = trainer_elem.get_text(strip=True).replace("\xa0", " ") if trainer_elem else ""
+            location_elem = description.find('div', class_='lesson_description')
+            location = location_elem.get_text(strip=True) if location_elem else ""
 
-            # Extract available spots
-            availability = tooltip.find('div', class_='availability')
+            trainer_link = description.find('a', class_='ajax_popup_trigger')
+            if trainer_link:
+                trainer = trainer_link.get_text(strip=True).replace("\xa0", " ")
+            elif trainer_part:
+                trainer = trainer_part
+            else:
+                trainer = ""
+
+            availability_elem = tooltip.find('div', class_='availability')
             spots = "N/A"
-            if availability and availability.strong:
-                spots = availability.strong.get_text(strip=True)
+            if availability_elem:
+                strong_elem = availability_elem.find('strong')
+                if strong_elem:
+                    spots = strong_elem.get_text(strip=True)
 
-            lesson['lessons'].append({
-                'name': lesson_name,
-                'time': f"{start_time}-{end_time}",
-                'trainer': [trainer] if trainer else [],
-                'spots': spots
-            })
+            lesson_entry = {
+                'date': date.strftime(DATE_FORMAT_CZ),
+                'gym': GYM,
+                'lessons': [{
+                    'name': lesson_name,
+                    'time': f"{start_time}-{end_time}",
+                    'trainer': [trainer] if trainer else [],
+                    'spots': spots,
+                    'location': location
+                }]
+            }
 
-            if lesson['lessons']:
-                schedule.append(lesson)
+            schedule.append(lesson_entry)
 
     return schedule
