@@ -9,7 +9,7 @@ from helpers import get_next_schedule_start_date, DATE_FORMAT_CZ
 
 SCHEDULE_URL = "https://bevondrsfull.clubspire.cz/timeline/week?criteriaTimestamp&resetFilter=true#timelineCalendar"
 GYM = "Be Vondrsfull"
-IGNORED_LESSONS = ["PRONÁJEM SÁLU", "BARRE BODY", "PILATES S ROLLERY"]
+IGNORED_LESSONS = ["PRONÁJEM SÁLU", "BARRE BODY", "PILATES S ROLLERY", "REFORMER PILATES", "POWER PLATE"]
 
 def get_schedule():
     print(f"Getting schedule from {GYM}...")
