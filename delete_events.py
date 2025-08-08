@@ -2,17 +2,16 @@ import datetime
 
 from gcal_updater import GoogleCalendarClient
 
-def delete_gym_events(gym: str) -> None:
+def delete_events(query: str | None = None, timeMin: str | None = None, timeMax: str | None = None) -> None:
+    if not (query or timeMin or timeMax):
+        return
+
     service = GoogleCalendarClient()
-    today = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    gym_events = service.list_events(query=gym, start_from=today)
+    gym_events = service.list_events(query=query, timeMin=timeMin, timeMax=timeMax)
     for event in gym_events:
         print(event)
         service.delete_event(event)
 
 if __name__ == '__main__':
-    GYM = ""
-    if not GYM:
-        print("Set a gym to avoid deleting all events")
-    else:
-        delete_gym_events(gym=GYM)
+    today = datetime.datetime.now(datetime.timezone.utc)
+    delete_events()

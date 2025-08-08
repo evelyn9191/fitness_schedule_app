@@ -28,12 +28,13 @@ class GoogleCalendarClient:
         print(f"Deleting event {event['summary']} of gym {event['location']}, id {event['id']}...")
         self.service.events().delete(calendarId=self.calendar_id, eventId=event['id']).execute()
 
-    def list_events(self, query=None, start_from=None) -> list:
+    def list_events(self, query=None, timeMin=None, timeMax=None) -> list:
         event_items = []
         page_token = None
         while True:
             events = self.service.events().list(calendarId=os.getenv("GOOGLE_CALENDAR_ID"),
-                                          timeMin=start_from,
+                                          timeMin=timeMin,
+                                          timeMax=timeMax,
                                           singleEvents=True,
                                           orderBy='startTime',
                                           q=query).execute()
