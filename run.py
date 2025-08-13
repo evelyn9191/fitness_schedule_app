@@ -4,7 +4,7 @@ import logging
 
 from gcal_updater import GoogleCalendarClient
 from helpers import DATE_FORMAT_US, DATE_FORMAT_CZ
-from schedules import goodfellas, bevondrsfull, imfit, yogaholick, siddha_yoga, moony_yoga, myfitness
+from schedules import goodfellas, bevondrsfull, imfit, yogaholick, siddha_yoga, myfitness
 
 
 def run():
@@ -60,7 +60,6 @@ def get_all_schedules():
         myfitness.get_schedule,
         yogaholick.get_schedule,
         siddha_yoga.get_schedule,
-        moony_yoga.get_schedule
     ]
     all_schedules = [schedule() for schedule in schedule_functions]
     return sum(all_schedules, [])

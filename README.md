@@ -13,7 +13,6 @@ It supports multiple gym providers:
   - ImFit
   - YogaHolick (reenio)
   - Siddha Yoga (isportsystem)
-  - Moony Yoga (isportsystem)
   - MyFitness (supersaas)
   - Mood Yoga (isportsystem)
   - Yoga Karlin (isportsystem)
