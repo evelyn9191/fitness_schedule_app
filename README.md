@@ -16,6 +16,7 @@ It supports multiple gym providers:
   - MyFitness (supersaas)
   - Mood Yoga (isportsystem)
   - Yoga Karlin (isportsystem)
+  - Form Factory Karlin (formfactory)
 
 ## Setup
 
@@ -43,7 +44,7 @@ Use with care, don't overload the gyms with requests! :pray:
 
 ## Requirements
 
-- Python 3.x
+- Python >= 3.9
 - Google Calendar API credentials
 - Dependencies listed in `requirements.txt`
 
