@@ -13,7 +13,9 @@ def run():
         logging.info("No schedules to update.")
         return
 
-    GoogleCalendarClient().sync_lessons_to_calendar(all_schedules)
+    cleaned_schedules = skip_morning_lessons(all_schedules)
+
+    GoogleCalendarClient().sync_lessons_to_calendar(cleaned_schedules)
 
     save_run_details(all_schedules)
 
@@ -51,6 +53,19 @@ def get_last_lesson_date(all_schedules: list) -> dict:
                 last_lesson_date = lesson_date
         gym_last_lesson_pair[gym] = datetime.datetime.strftime(last_lesson_date, DATE_FORMAT_US)
     return gym_last_lesson_pair
+
+def skip_morning_lessons(all_schedules: list) -> list:
+    cleaned_schedules = []
+    for schedule in all_schedules:
+        cleaned_lessons = []
+        for lesson in schedule['lessons']:
+            start_time = lesson['time'].split("-")[0].split("–")[0]
+            converted_time = datetime.datetime.strptime(start_time, "%H:%M")
+            day = datetime.datetime.strptime(schedule['date'], DATE_FORMAT_CZ).weekday()
+            if converted_time.hour >= 10 or day in [5, 6]:
+                cleaned_lessons.append(schedule)
+        cleaned_schedules.append(schedule | {'lessons': cleaned_lessons})
+    return cleaned_schedules
 
 def get_all_schedules():
     schedule_functions = [
