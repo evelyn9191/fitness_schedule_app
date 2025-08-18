@@ -63,8 +63,9 @@ def skip_morning_lessons(all_schedules: list) -> list:
             converted_time = datetime.datetime.strptime(start_time, "%H:%M")
             day = datetime.datetime.strptime(schedule['date'], DATE_FORMAT_CZ).weekday()
             if converted_time.hour >= 10 or day in [5, 6]:
-                cleaned_lessons.append(schedule)
-        cleaned_schedules.append(schedule | {'lessons': cleaned_lessons})
+                cleaned_lessons.append(lesson)
+        schedule['lessons'] = cleaned_lessons
+        cleaned_schedules.append(schedule)
     return cleaned_schedules
 
 def get_all_schedules():
