@@ -3,7 +3,7 @@ import logging
 
 from gcal_updater import GoogleCalendarClient
 from helpers import DATE_FORMAT_CZ
-from schedules import moodyoga, yogakarlin, form_factory
+from schedules import moodyoga, yogakarlin, form_factory, origami_yoga
 
 DAY_TO_TRACK = datetime.date.today() + datetime.timedelta(days=1)
 FROM_TIME = datetime.time(8, 0)
@@ -42,6 +42,7 @@ def get_all_schedules():
         moodyoga.get_schedule,
         yogakarlin.get_schedule,
         form_factory.get_schedule,
+        # origami_yoga.get_schedule,
     ]
     all_schedules = [schedule() for schedule in schedule_functions]
     return sum(all_schedules, [])
