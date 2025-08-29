@@ -14,10 +14,11 @@ def run():
         return
 
     cleaned_schedules = skip_morning_lessons(all_schedules)
+    cleaned_schedules = keep_only_next_two_weeks_schedules(cleaned_schedules)
 
     GoogleCalendarClient().sync_lessons_to_calendar(cleaned_schedules)
 
-    save_run_details(all_schedules)
+    save_run_details(cleaned_schedules)
 
 def save_run_details(all_schedules: list) -> None:
     gym_last_lesson_pair = get_last_lesson_date(all_schedules)
@@ -53,6 +54,14 @@ def get_last_lesson_date(all_schedules: list) -> dict:
                 last_lesson_date = lesson_date
         gym_last_lesson_pair[gym] = datetime.datetime.strftime(last_lesson_date, DATE_FORMAT_US)
     return gym_last_lesson_pair
+
+def keep_only_next_two_weeks_schedules(all_schedules: list) -> list:
+    cleaned_schedules = []
+    for schedule in all_schedules:
+        lesson_date = datetime.datetime.strptime(schedule['date'], DATE_FORMAT_CZ)
+        if lesson_date.date() <= datetime.date.today() + datetime.timedelta(days=14):
+            cleaned_schedules.append(schedule)
+    return cleaned_schedules
 
 def skip_morning_lessons(all_schedules: list) -> list:
     cleaned_schedules = []
