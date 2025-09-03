@@ -15,9 +15,9 @@ def delete_events(query: str | None = None, timeMin: str | None = None, timeMax:
 
 if __name__ == '__main__':
     now = datetime.datetime.now()
-    two_days_later = now + datetime.timedelta(days=4)
-    time_min = two_days_later.replace(hour=0, minute=0, second=0, microsecond=0)
-    time_max = two_days_later.replace(hour=23, minute=59, second=59, microsecond=999999)
+    some_days_later = now + datetime.timedelta(days=1)
+    time_min = some_days_later.replace(hour=0, minute=0, second=0, microsecond=0)
+    time_max = some_days_later.replace(hour=23, minute=59, second=59, microsecond=999999)
     time_min_iso = time_min.isoformat() + 'Z'
     time_max_iso = time_max.isoformat() + 'Z'
 
