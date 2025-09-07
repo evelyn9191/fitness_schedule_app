@@ -8,7 +8,7 @@ GYM = "Form Factory Karlin"
 IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné"]
 
 
-def get_schedule():
+def get_schedule(*args):
     print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
