@@ -1,6 +1,7 @@
 import json
 import datetime
 import requests
+import pytz
 
 from helpers import get_next_schedule_start_date, get_date_string
 
@@ -45,9 +46,14 @@ def parse_schedule(html: str):
         if session.get("isCancelled"):
             continue
 
-        # Parse the start time
-        start_time = datetime.datetime.fromisoformat(session["startsAt"].replace('Z', '+00:00'))
-        end_time = datetime.datetime.fromisoformat(session["endsAt"].replace('Z', '+00:00'))
+        # Parse the start time (UTC) and convert to Prague timezone
+        start_time_utc = datetime.datetime.fromisoformat(session["startsAt"].replace('Z', '+00:00'))
+        end_time_utc = datetime.datetime.fromisoformat(session["endsAt"].replace('Z', '+00:00'))
+        
+        # Convert to Prague timezone
+        prague_tz = pytz.timezone('Europe/Prague')
+        start_time = start_time_utc.astimezone(prague_tz)
+        end_time = end_time_utc.astimezone(prague_tz)
         
         # Format date and time
         date_str = start_time.strftime("%d.%m.%Y")
