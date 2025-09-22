@@ -2,15 +2,19 @@ import datetime
 
 import requests
 from bs4 import BeautifulSoup
+import logging
 
-from helpers import get_next_schedule_start_date, get_date_string
+from helpers import get_date_string, get_next_schedule_start_date
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 SCHEDULE_URL = "https://goodfellasgym.inrs.cz/rs/kalendar_vypis/kalendar_vypis"
 GYM = "GoodFellas"
 IGNORED_LESSONS = [
     "OPEN", "GF Maminky s dětmi", "GF Vzpírání", "Funkční Fit. 2",
     "GF FF 2 - Ranní", "B-Cross Run Prep", "Běžecký trénink (technika & Intervaly)",
-    "GF FF 1 - Týmovky - Ranní",
+    "GF FF 1 - Týmovky - Ranní", "GF FF 1/2 - Ranní"
 ]
 
 def get_schedule():
@@ -19,12 +23,27 @@ def get_schedule():
     if not parse_from:
         return []
 
+    session = requests.Session()
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+    }
+    
+    session.get(SCHEDULE_URL, headers=headers)
+    
     dates_to_parse_from = [get_date_string(parse_from), get_date_string(parse_from + datetime.timedelta(days=7))]
     parsed_schedules = []
+    
     for date in dates_to_parse_from:
         schedule_url = f"{SCHEDULE_URL}/{date}/1"
-        response = requests.post(schedule_url)
-        parsed_schedules.extend(parse_schedule(response.text))
+        response = session.get(schedule_url, headers=headers)
+        response.raise_for_status()
+        parsed = parse_schedule(response.text)
+        parsed_schedules.extend(parsed)
+            
     return parsed_schedules
 
 def parse_schedule(html):
