@@ -14,7 +14,7 @@ GYM = "GoodFellas"
 IGNORED_LESSONS = [
     "OPEN", "GF Maminky s dětmi", "GF Vzpírání", "Funkční Fit. 2",
     "GF FF 2 - Ranní", "B-Cross Run Prep", "Běžecký trénink (technika & Intervaly)",
-    "GF FF 1 - Týmovky - Ranní", "GF FF 1/2 - Ranní"
+    "GF FF 1 - Týmovky", "GF FF 1 - Týmovky - Ranní", "GF FF 1/2 - Ranní"
 ]
 
 def get_schedule():
