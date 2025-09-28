@@ -15,6 +15,10 @@ def get_schedule(*args):
         return []
 
     dates_to_parse_from = ["", get_date_string(parse_from + datetime.timedelta(days=7), DATE_FORMAT_CZ)]
+    if datetime.date.today().weekday() == 6:
+        # If Sunday, add +1 date to parse also the upcoming week, not just to the end of the current week
+        dates_to_parse_from.append(get_date_string(parse_from + datetime.timedelta(days=1), DATE_FORMAT_CZ))
+
     parsed_schedules = []
     for date in dates_to_parse_from:
         handler = FormFactorySchedulesHandler(GYM, "palladium", date)
