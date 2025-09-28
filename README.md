@@ -10,13 +10,14 @@ A Python application that aggregates fitness class schedules from various gyms a
 It supports multiple gym providers:
   - GoodFellas (inrs.cz)
   - Bevondrsfull (clubspire)
-  - ImFit
   - YogaHolick (reenio)
   - Siddha Yoga (isportsystem)
-  - MyFitness (supersaas)
   - Mood Yoga (isportsystem)
   - Yoga Karlin (isportsystem)
+  - Prague Yoga Collective (momence)
   - Form Factory Karlin (formfactory)
+  - Form Factory Palladium (formfactory)
+  - Form Factory Fügnerova (formfactory)
 
 ## Setup
 
