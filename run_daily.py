@@ -6,8 +6,8 @@ from helpers import DATE_FORMAT_CZ
 from schedules import moodyoga, yogakarlin, ff_karlin, origami_yoga, prague_yoga_collective, ff_palladium
 
 DAY_TO_TRACK = datetime.date.today() + datetime.timedelta(days=4)
-FROM_TIME = datetime.time(8, 0)
-TO_TIME = datetime.time(17, 30)
+FROM_TIME = datetime.time(15, 0)
+TO_TIME = datetime.time(17, 50)
 
 def run():
     all_schedules = get_all_schedules()
@@ -28,10 +28,16 @@ def filter_schedules_by_day(all_schedules: list) -> list[dict]:
         if lesson_date.date() == DAY_TO_TRACK:
             day_lessons = []
             for day_lesson in day_schedule['lessons']:
+
                 start_time = day_lesson["time"].split("-")[0].split("–")[0]
                 hour, minutes = start_time.split(":")
-                lesson_time = datetime.time(int(hour), int(minutes))
-                if FROM_TIME <= lesson_time <= TO_TIME:
+                lesson_start_time = datetime.time(int(hour), int(minutes))
+
+                end_time = day_lesson["time"].split("-")[1].split("–")[0]
+                hour, minutes = end_time.split(":")
+                lesson_end_time = datetime.time(int(hour), int(minutes))
+
+                if FROM_TIME <= lesson_start_time <= TO_TIME and lesson_end_time <= TO_TIME:
                     day_lessons.append(day_lesson)
             day_schedule['lessons'] = day_lessons
             filtered_schedules.append(day_schedule)
