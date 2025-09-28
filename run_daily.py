@@ -49,6 +49,8 @@ def get_all_schedules():
         yogakarlin.get_schedule,
         ff_karlin.get_schedule,
         prague_yoga_collective.get_schedule
+        # origami_yoga.get_schedule,
+        # ff_palladium.get_schedule,
     ]
     all_schedules = [schedule(DAY_TO_TRACK) for schedule in schedule_functions]
     return sum(all_schedules, [])
