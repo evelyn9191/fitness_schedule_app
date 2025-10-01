@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné"]
+IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné", "MAMINKY"]
 
 
 class FormFactorySchedulesHandler:
