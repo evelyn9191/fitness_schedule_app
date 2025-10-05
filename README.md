@@ -10,6 +10,7 @@ A Python application that aggregates fitness class schedules from various gyms a
 It supports multiple gym providers:
   - GoodFellas (inrs.cz)
   - Bevondrsfull (clubspire)
+  - Profitko (reservanto)
   - YogaHolick (reenio)
   - Siddha Yoga (isportsystem)
   - Mood Yoga (isportsystem)
