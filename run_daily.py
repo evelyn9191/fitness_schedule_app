@@ -28,12 +28,11 @@ def filter_schedules_by_day(all_schedules: list) -> list[dict]:
         if lesson_date.date() == DAY_TO_TRACK:
             day_lessons = []
             for day_lesson in day_schedule['lessons']:
-
-                start_time = day_lesson["time"].split("-")[0].split("–")[0]
+                day_lesson["time"] = day_lesson["time"].replace("–", "-")
+                start_time = day_lesson["time"].split("-")[0].split("-")[0]
                 hour, minutes = start_time.split(":")
                 lesson_start_time = datetime.time(int(hour), int(minutes))
-
-                end_time = day_lesson["time"].split("-")[1].split("–")[0]
+                end_time = day_lesson["time"].split("-")[1].split("-")[0]
                 hour, minutes = end_time.split(":")
                 lesson_end_time = datetime.time(int(hour), int(minutes))
 
@@ -48,7 +47,7 @@ def get_all_schedules():
         moodyoga.get_schedule,
         yogakarlin.get_schedule,
         ff_karlin.get_schedule,
-        prague_yoga_collective.get_schedule
+        prague_yoga_collective.get_schedule,
         # origami_yoga.get_schedule,
         # ff_palladium.get_schedule,
     ]
