@@ -1,15 +1,37 @@
 import datetime
 import re
 from typing import Any
+import logging
 
 import requests
 from bs4 import BeautifulSoup
 
 from helpers import get_next_schedule_start_date, DATE_FORMAT_CZ
 
-SCHEDULE_URL = "https://bevondrsfull.clubspire.cz/timeline/week?criteriaTimestamp&resetFilter=true#timelineCalendar"
+BASE_URL = "https://bevondrsfull.clubspire.cz"
+SCHEDULE_URL = f"{BASE_URL}/timeline/week"
 GYM = "Be Vondrsfull"
 IGNORED_LESSONS = ["PRONÁJEM SÁLU", "BARRE BODY", "PILATES S ROLLERY", "REFORMER PILATES", "POWER PLATE"]
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def get_week_timestamps():
+    """Generate timestamps for current week and next two weeks"""
+    now = datetime.datetime.now()
+    timestamps = []
+    
+    # Get current week's Monday
+    current_week = now - datetime.timedelta(days=now.weekday())
+    
+    # Generate timestamps for current week and next two weeks
+    for week in range(3):
+        week_date = current_week + datetime.timedelta(weeks=week)
+        timestamp = int(week_date.timestamp()) * 1000
+        timestamps.append(timestamp)
+    
+    return timestamps
 
 def get_schedule():
     print(f"Getting schedule from {GYM}...")
@@ -18,9 +40,35 @@ def get_schedule():
         return []
 
     parsed_schedules = []
-    response = requests.get(SCHEDULE_URL)
+    session = requests.Session()
+    
+    # Set headers to mimic a browser request
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Referer': f'{BASE_URL}/',
+        'X-Requested-With': 'XMLHttpRequest'
+    }
+    
+    # First, get the initial page to set up the session
+    session.get(f"{BASE_URL}/timeline", headers=headers)
+    
+    # Get schedules for current week and next two weeks
+    for timestamp in get_week_timestamps():
+        params = {
+            'criteriaTimestamp': str(timestamp),
+            'resetFilter': 'true'
+        }
 
-    parsed_schedules.extend(parse_schedule(response.text, parse_from))
+        response = session.get(SCHEDULE_URL, headers=headers, params=params)
+        response.raise_for_status()
+
+        parsed = parse_schedule(response.text, parse_from)
+        parsed_schedules.extend(parsed)
+    
     return parsed_schedules
 
 
