@@ -2,7 +2,8 @@ import datetime
 
 from bs4 import BeautifulSoup
 
-IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI", "Open shala", "Jóga pro těhotné"]
+IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI", "Open shala", "Jóga pro těhotné", "Pravidelné jógové hry pro rodiče a děti 4 - 8 let"]
+SIDDHA_YOGA_FUGNEROVA_VENUE_COLOR = "#f2b825"
 
 class ISportSystemSchedulesHandler:
     def __init__(self, gym: str, domain_name: str, parse_from: datetime.date):
@@ -63,12 +64,18 @@ class ISportSystemSchedulesHandler:
             if not current_date:
                 continue
 
+            if self.gym == "Siddha Yoga":
+                style = row.get('style', '').lower()
+                is_fugnerova = SIDDHA_YOGA_FUGNEROVA_VENUE_COLOR in style
+                if not is_fugnerova:
+                    continue
+
             lesson = {
                 'name': name,
                 'date': current_date,
                 'time': info.get('Čas'),
                 'trainer': info.get('Instruktor', ''),
-                'spots': capacity
+                'spots': capacity,
             }
 
             if current_date not in lessons_by_dates:
