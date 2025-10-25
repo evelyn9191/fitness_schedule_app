@@ -2,7 +2,9 @@ import datetime
 
 from bs4 import BeautifulSoup
 
-IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI", "Open shala", "Jóga pro těhotné", "Pravidelné jógové hry pro rodiče a děti 4 - 8 let"]
+IGNORED_LESSONS = ["Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI", "Open shala", "Jóga pro těhotné",
+                   "Pravidelné jógové hry pro rodiče a děti 4 - 8 let", "Jógové hry pro rodiče a děti 4 - 8 let",
+                   "Jógové hry pro rodiče a děti 5 - 12 let"]
 SIDDHA_YOGA_FUGNEROVA_VENUE_COLOR = "#f2b825"
 
 class ISportSystemSchedulesHandler:
