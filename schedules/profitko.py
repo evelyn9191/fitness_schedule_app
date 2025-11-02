@@ -81,9 +81,21 @@ def get_schedule():
         )
         response.raise_for_status()
         
-        # Parse the schedule for this week and add to all schedules
+        # Parse the schedule for this week
         week_schedule = parse_schedule(response.text)
-        all_schedules.extend(week_schedule)
+        
+        # Filter out days before parse_from
+        filtered_schedule = []
+        for day in week_schedule:
+            try:
+                day_date = datetime.datetime.strptime(day['date'], '%d.%m.%Y').date()
+                if day_date >= parse_from:
+                    filtered_schedule.append(day)
+            except (ValueError, KeyError) as e:
+                print(f"Error processing day {day.get('date', 'unknown')}: {e}")
+                continue
+                
+        all_schedules.extend(filtered_schedule)
         
         # Small delay between requests to be nice to the server
         import time
