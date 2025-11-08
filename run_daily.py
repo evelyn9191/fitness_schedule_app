@@ -6,7 +6,7 @@ from helpers import DATE_FORMAT_CZ
 from schedules import moodyoga, yogakarlin, ff_karlin, origami_yoga, prague_yoga_collective, ff_palladium
 
 DAY_TO_TRACK = datetime.date.today() + datetime.timedelta(days=4)
-FROM_TIME = datetime.time(15, 0)
+FROM_TIME = datetime.time(10, 0)
 TO_TIME = datetime.time(17, 50)
 
 def run():
