@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 SCHEDULE_URL = "https://booking.reservanto.cz/Modal/?id=10578&lId=10469"
 GYM = "Profitko"
 IGNORED_LESSONS = [
-    "ČLEN REGISTRACE", "Seznamovačka", "Team kondička"
+    "ČLEN REGISTRACE", "Seznamovačka", "Team kondička", "Kondička", "Silovka", "Skills"
 ]
 
 
