@@ -15,7 +15,6 @@ It supports multiple gym providers:
   - Siddha Yoga (isportsystem)
   - Mood Yoga (isportsystem)
   - Yoga Karlin (isportsystem)
-  - Prague Yoga Collective (momence)
   - Form Factory Karlin (formfactory)
   - Form Factory Palladium (formfactory)
   - Form Factory Fügnerova (formfactory)
