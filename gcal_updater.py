@@ -47,7 +47,7 @@ class GoogleCalendarClient:
     def sync_lessons_to_calendar(self, all_schedules: list) -> None:
         batch = self.service.new_batch_http_request()
         event_count = 0
-        max_batch_size = 50
+        max_batch_size = 10
 
         for day in all_schedules:
             logging.info("Creating calendar events for gym %s on %s", day.get("gym"), day["date"])
