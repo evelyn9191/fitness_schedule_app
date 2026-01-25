@@ -7,7 +7,7 @@ DATE_FORMAT_CZ = "%d.%m.%Y"
 
 def get_next_schedule_start_date(gym_name: str) -> datetime.date:
     last_run_date, last_lesson_date = load_last_run_details(gym_name)
-    current_date = datetime.datetime.now().date()
+    current_date = datetime.datetime.now().date() + datetime.timedelta(days=1)
     start_parsing_from = last_lesson_date + datetime.timedelta(days=1)
     future_date = max(start_parsing_from, current_date)
     return future_date
