@@ -22,12 +22,12 @@ class ISportSystemSchedulesHandler:
             "X-Requested-With": "XMLHttpRequest",
         }
 
-    def get_params(self) -> dict:
+    def get_params(self, id_sport: int = 5) -> dict:
         return {
             "day": self.parse_from.day,
             "month": self.parse_from.month,
             "year": self.parse_from.year,
-            "id_sport": 5,
+            "id_sport": id_sport,
             "event": "pageLoad",
             "tab_type": "activity",
             "timetableWidth": 956,

@@ -3,7 +3,7 @@ import logging
 
 from gcal_updater import GoogleCalendarClient
 from helpers import DATE_FORMAT_CZ
-from schedules import moodyoga, yogakarlin, ff_karlin, origami_yoga, ff_palladium
+from schedules import moodyoga_karlin, yogakarlin, ff_karlin, origami_yoga, ff_palladium
 
 DAY_TO_TRACK = datetime.date.today() + datetime.timedelta(days=4)
 FROM_TIME = datetime.time(10, 0)
@@ -44,7 +44,7 @@ def filter_schedules_by_day(all_schedules: list) -> list[dict]:
 
 def get_all_schedules():
     schedule_functions = [
-        moodyoga.get_schedule,
+        moodyoga_karlin.get_schedule,
         yogakarlin.get_schedule,
         ff_karlin.get_schedule,
         # origami_yoga.get_schedule,
