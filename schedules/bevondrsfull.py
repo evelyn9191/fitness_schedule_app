@@ -12,7 +12,7 @@ BASE_URL = "https://bevondrsfull.clubspire.cz"
 SCHEDULE_URL = f"{BASE_URL}/timeline/week"
 GYM = "Be Vondrsfull"
 IGNORED_LESSONS = ["PRONÁJEM SÁLU", "BARRE BODY", "PILATES S ROLLERY", "REFORMER PILATES",
-                   "POWER PLATE", "KRUHOVÝ TRÉNINK", "FYZIO PILATES", "PILATES", "TRX"]
+                   "POWER PLATE", "KRUHOVÝ TRÉNINK", "FYZIO PILATES", "PILATES", "TRX", "DYNAMICKÁ YOGA (Nepřijímáme Multisport)"]
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
