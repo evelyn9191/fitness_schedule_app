@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné",
+GLOBALLY_IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné",
                    "MAMINKY", "BOSU", "CHI-TONING", "BODY TRAINING", "FITBOX",
                    "KRUHOVÝ TRÉNINK", "FYZIO PILATES", "HIIT"
                    ]
@@ -18,7 +18,10 @@ class FormFactorySchedulesHandler:
             "day": self.parse_from,
         }
 
-    def parse_schedule(self, html):
+    def parse_schedule(self, html, ignored_lessons: list[str] | None = None):
+        if not ignored_lessons:
+            ignored_lessons = GLOBALLY_IGNORED_LESSONS
+
         soup = BeautifulSoup(html, "html.parser")
         days = []
 
@@ -49,7 +52,7 @@ class FormFactorySchedulesHandler:
                 name_elem = event_div.find("p", class_="event_name")
                 if name_elem:
                     lesson_info["name"] = name_elem.text.strip()
-                    if lesson_info["name"] in IGNORED_LESSONS:
+                    if lesson_info["name"] in ignored_lessons:
                         continue
 
                 # Extract time

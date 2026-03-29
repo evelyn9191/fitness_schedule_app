@@ -3,10 +3,11 @@ import datetime
 import requests
 
 from helpers import get_next_schedule_start_date, get_date_string, DATE_FORMAT_CZ
-from schedules.form_factory import FormFactorySchedulesHandler
+from schedules.form_factory import FormFactorySchedulesHandler, GLOBALLY_IGNORED_LESSONS
 
 GYM = "Form Factory Rochlice"
-
+ROCHLICE_IGNORED_LESSONS = ["Power jóga", "Bodypump®️", "Ranní jóga", "Pilates", "Tabata"]
+IGNORED_LESSONS = GLOBALLY_IGNORED_LESSONS + ROCHLICE_IGNORED_LESSONS
 
 def get_schedule(*args):
     print(f"Getting schedule from {GYM}...")
@@ -23,5 +24,5 @@ def get_schedule(*args):
     for date in dates_to_parse_from:
         handler = FormFactorySchedulesHandler(GYM, "rochlice", date)
         response = requests.get(handler.schedule_url, params=handler.get_params(), verify=False)
-        parsed_schedules.extend(handler.parse_schedule(response.text))
+        parsed_schedules.extend(handler.parse_schedule(response.text, IGNORED_LESSONS))
     return parsed_schedules
