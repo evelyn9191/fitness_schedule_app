@@ -18,6 +18,7 @@ It supports multiple gym providers:
   - Form Factory Karlin (formfactory)
   - Form Factory Palladium (formfactory)
   - Form Factory Fügnerova (formfactory)
+  - Form Factory Rochlice (formfactory)
 
 ## Setup
 
