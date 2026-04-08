@@ -13,7 +13,7 @@ SCHEDULE_URL = f"{BASE_URL}/timeline/week"
 GYM = "Be Vondrsfull"
 IGNORED_LESSONS = ["PRONÁJEM SÁLU", "BARRE BODY", "PILATES S ROLLERY", "REFORMER PILATES",
                    "POWER PLATE", "KRUHOVÝ TRÉNINK", "FYZIO PILATES", "PILATES", "TRX", "DYNAMICKÁ YOGA (Nepřijímáme Multisport)",
-                    "BARRE DYNAMIC", "BARRE FUSION", "BARRE BURN", "BARRE SCULPT"
+                    "BARRE DYNAMIC", "BARRE FUSION", "BARRE BURN", "BARRE SCULPT", "JIN YOGA"
                    ]
 
 # Set up logging
