@@ -6,7 +6,7 @@ from helpers import get_next_schedule_start_date, get_date_string, DATE_FORMAT_C
 from schedules.form_factory import FormFactorySchedulesHandler, GLOBALLY_IGNORED_LESSONS
 
 GYM = "Form Factory Rochlice"
-ROCHLICE_IGNORED_LESSONS = ["Power jóga", "Bodypump®️", "Ranní jóga", "Pilates", "Tabata"]
+ROCHLICE_IGNORED_LESSONS = ["Power jóga", "Bodypump®️", "Ranní jóga", "Pilates", "TABATA"]
 IGNORED_LESSONS = GLOBALLY_IGNORED_LESSONS + ROCHLICE_IGNORED_LESSONS
 
 def get_schedule(*args):

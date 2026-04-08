@@ -7,6 +7,8 @@ from schedules.isportsystem import ISportSystemSchedulesHandler
 
 GYM = "Siddha Yoga"
 
+IGNORED_LESSONS = ["Jóga & pilates", "Lunch jóga"]
+
 def get_schedule():
     print(f"Getting schedule from {GYM}...")
     parse_from = get_next_schedule_start_date(GYM)
