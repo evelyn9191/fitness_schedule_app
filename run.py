@@ -13,7 +13,8 @@ def run():
         logging.info("No schedules to update.")
         return
 
-    cleaned_schedules = skip_morning_lessons(all_schedules)
+    cleaned_schedules = skip_already_scraped_schedules(all_schedules)
+    cleaned_schedules = skip_morning_lessons(cleaned_schedules)
     cleaned_schedules = keep_only_next_two_weeks_schedules(cleaned_schedules)
 
     GoogleCalendarClient().sync_lessons_to_calendar(cleaned_schedules)
@@ -61,6 +62,30 @@ def keep_only_next_two_weeks_schedules(all_schedules: list) -> list:
         lesson_date = datetime.datetime.strptime(schedule['date'], DATE_FORMAT_CZ)
         if lesson_date.date() <= datetime.date.today() + datetime.timedelta(days=14):
             cleaned_schedules.append(schedule)
+    return cleaned_schedules
+
+def skip_already_scraped_schedules(all_schedules: list) -> list:
+    try:
+        with open('run_details.json', 'r') as file:
+            previous_run_details = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return all_schedules
+    
+    cleaned_schedules = []
+    for schedule in all_schedules:
+        gym_name = schedule['gym']
+        schedule_date = datetime.datetime.strptime(schedule['date'], DATE_FORMAT_CZ).date()
+        
+        if gym_name not in previous_run_details:
+            cleaned_schedules.append(schedule)
+            continue
+            
+        run_details = previous_run_details[gym_name]
+        end_date = datetime.datetime.strptime(run_details['end'], "%Y-%m-%d").date()
+        
+        if schedule_date > end_date:
+            cleaned_schedules.append(schedule)
+    
     return cleaned_schedules
 
 def skip_morning_lessons(all_schedules: list) -> list:
