@@ -6,7 +6,7 @@ from helpers import get_next_schedule_start_date, get_date_string, DATE_FORMAT_C
 from schedules.form_factory import FormFactorySchedulesHandler, GLOBALLY_IGNORED_LESSONS
 
 GYM = "Form Factory Fügnerova"
-FUGNEROVA_IGNORED_LESSONS = ["JUMPING"]
+FUGNEROVA_IGNORED_LESSONS = ["JUMPING", "CORE TRAINING"]
 IGNORED_LESSONS = GLOBALLY_IGNORED_LESSONS + FUGNEROVA_IGNORED_LESSONS
 
 
