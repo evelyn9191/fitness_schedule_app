@@ -110,8 +110,8 @@ def get_all_schedules():
         ff_fugnerova.get_schedule,
         ff_rochlice.get_schedule,
         elite_athletics.get_schedule,
-        yogaholick.get_schedule,
-        siddha_yoga.get_schedule,
+        # yogaholick.get_schedule,
+        # siddha_yoga.get_schedule,
     ]
     all_schedules = [schedule() for schedule in schedule_functions]
     return sum(all_schedules, [])
