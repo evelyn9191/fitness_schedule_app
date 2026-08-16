@@ -105,13 +105,13 @@ def skip_morning_lessons(all_schedules: list) -> list:
 def get_all_schedules():
     schedule_functions = [
         goodfellas.get_schedule,
-        bevondrsfull.get_schedule,
         profitko.get_schedule,
         ff_fugnerova.get_schedule,
         ff_rochlice.get_schedule,
         elite_athletics.get_schedule,
         # yogaholick.get_schedule,
         # siddha_yoga.get_schedule,
+        # bevondrsfull.get_schedule,
     ]
     all_schedules = [schedule() for schedule in schedule_functions]
     return sum(all_schedules, [])
