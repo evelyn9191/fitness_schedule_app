@@ -11,11 +11,14 @@ IGNORED_LESSONS = GLOBALLY_IGNORED_LESSONS + ROCHLICE_IGNORED_LESSONS
 
 def get_schedule(*args):
     print(f"Getting schedule from {GYM}...")
-    parse_from = get_next_schedule_start_date(GYM)
+    if args and args[0]:
+        parse_from = args[0]
+    else:
+        parse_from = get_next_schedule_start_date(GYM)
     if not parse_from:
         return []
 
-    dates_to_parse_from = ["", get_date_string(parse_from + datetime.timedelta(days=7), DATE_FORMAT_CZ)]
+    dates_to_parse_from = [get_date_string(parse_from, DATE_FORMAT_CZ), get_date_string(parse_from + datetime.timedelta(days=7), DATE_FORMAT_CZ)]
     if datetime.date.today().weekday() == 6:
         # If Sunday, add +1 date to parse also the upcoming week, not just to the end of the current week
         dates_to_parse_from.append(get_date_string(parse_from + datetime.timedelta(days=1), DATE_FORMAT_CZ))
