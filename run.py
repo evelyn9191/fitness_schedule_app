@@ -49,7 +49,9 @@ def get_last_lesson_date(all_schedules: list) -> dict:
             gym = lesson['gym']
             last_lesson_date = lesson_date
         elif gym != lesson['gym']:
-            gym_last_lesson_pair = {gym: last_lesson_date}
+            gym_last_lesson_pair[gym] = datetime.datetime.strftime(last_lesson_date, DATE_FORMAT_US)
+            gym = lesson['gym']
+            last_lesson_date = lesson_date
         else:
             if lesson_date > last_lesson_date:
                 last_lesson_date = lesson_date
@@ -109,9 +111,9 @@ def get_all_schedules():
         ff_fugnerova.get_schedule,
         ff_rochlice.get_schedule,
         elite_athletics.get_schedule,
-        # yogaholick.get_schedule,
-        # siddha_yoga.get_schedule,
-        # bevondrsfull.get_schedule,
+        yogaholick.get_schedule,
+        siddha_yoga.get_schedule,
+        bevondrsfull.get_schedule,
     ]
     all_schedules = [schedule() for schedule in schedule_functions]
     return sum(all_schedules, [])
