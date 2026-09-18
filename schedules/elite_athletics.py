@@ -207,12 +207,7 @@ def get_schedule():
             headers=headers,
             verify=False
         )
-        print(f"Response status: {response.status_code}")
-        print(f"Response length: {len(response.text)}")
-        
         parsed = parse_elite_athletics_schedule(response.text)
-        print(f"Parsed {len(parsed)} schedule days")
-
         parsed_schedules.extend(parsed)
         
     except Exception as e:
