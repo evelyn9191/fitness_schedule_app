@@ -15,6 +15,7 @@ It supports multiple gym providers:
   - Siddha Yoga (isportsystem)
   - Mood Yoga (isportsystem)
   - Yoga Karlin (isportsystem)
+  - Elite Athletics (reservanto)
   - Form Factory Karlin (formfactory)
   - Form Factory Palladium (formfactory)
   - Form Factory Fügnerova (formfactory)

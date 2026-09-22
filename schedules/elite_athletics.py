@@ -92,9 +92,6 @@ def get_schedule():
     if not parse_from:
         return []
 
-    # Note: The Reservanto API only returns the current week's schedule
-    # regardless of the date parameter. This is a limitation of the API.
-    
     session = requests.Session()
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
@@ -108,9 +105,32 @@ def get_schedule():
     session.get("https://booking.reservanto.cz/Modal/?id=13652&seg=6", verify=False)
     
     parsed_schedules = []
-    
-    # Fetch schedule for the current week only (API limitation)
-    post_data = {
+
+    dates_to_parse_from = [parse_from, parse_from + datetime.timedelta(days=7)]
+
+    headers = session.headers.copy()
+    headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+
+    for date in dates_to_parse_from:
+        monday = date - datetime.timedelta(days=date.weekday())
+        post_data = build_post_data(date, monday)
+        try:
+            response = session.post(
+                "https://booking.reservanto.cz/Classes/Step2_Calendar",
+                data=post_data,
+                headers=headers,
+                verify=False
+            )
+            parsed = parse_elite_athletics_schedule(response.text)
+            parsed_schedules.extend(parsed)
+        except Exception as e:
+            print(f"Error fetching Elite Athletics schedule for {date}: {e}")
+
+    return parsed_schedules
+
+
+def build_post_data(date, monday):
+    return {
         "SessionStorage": "",
         "LocalStorage": "",
         "IsLoginOnly": "False",
@@ -159,12 +179,12 @@ def get_schedule():
         "FreeSpaceWaitingCustomerViewModel.StartsAt": "1.+1.+0001+0%3A00%3A00",
         "FreeSpaceWaitingCustomerViewModel.EndsAt": "",
         "FreeSpaceWaitingCustomerViewModel.MinimalFreeSpaceLength": "00%3A00%3A00",
-        "BookingTimeViewModel.DateTimeFrom": "0001-01-01T00%3A00%3A00%2B01%3A00",
+        "BookingTimeViewModel.DateTimeFrom": date.strftime("%Y-%m-%d") + "T00%3A00%3A00%2B01%3A00",
         "BookingTimeViewModel.DateTimeToSetter": "",
-        "BookingTimeViewModel.LastMondayDay": "0",
-        "BookingTimeViewModel.LastMondayMonth": "0",
-        "BookingTimeViewModel.LastMondayYear": "0",
-        "BookingTimeViewModel.LastSelectedDate": parse_from.strftime("%d.%m.%Y"),
+        "BookingTimeViewModel.LastMondayDay": str(monday.day),
+        "BookingTimeViewModel.LastMondayMonth": str(monday.month),
+        "BookingTimeViewModel.LastMondayYear": str(monday.year),
+        "BookingTimeViewModel.LastSelectedDate": date.strftime("%d.%m.%Y"),
         "BookingTimeViewModel.TimeInterval": "0",
         "BookingTimeViewModel.Length": "0",
         "BookingTimeViewModel.PaddingTime": "0",
@@ -196,21 +216,3 @@ def get_schedule():
         "MerchantGroupViewModel.SelectedServiceGroupId": "",
         "TrackingHints": "%7B%22StepName%22%3A%22%2FClasses%2FStep2%22%7D"
     }
-    
-    headers = session.headers.copy()
-    headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
-    
-    try:
-        response = session.post(
-            "https://booking.reservanto.cz/Classes/Step2_Calendar",
-            data=post_data,
-            headers=headers,
-            verify=False
-        )
-        parsed = parse_elite_athletics_schedule(response.text)
-        parsed_schedules.extend(parsed)
-        
-    except Exception as e:
-        print(f"Error fetching Elite Athletics schedule: {e}")
-    
-    return parsed_schedules
