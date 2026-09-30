@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from helpers import get_next_schedule_start_date
 
 GYM = "Elite Athletics"
+IGNORED_LESSONS = ["Silový trénink"]
 
 
 def parse_duration_minutes(duration_text):
@@ -64,6 +65,9 @@ def parse_elite_athletics_schedule(html):
             info = appointment.select_one('.appointment-list-group-appointment-info')
             name_element = info.find('h4') if info else None
             lesson_name = name_element.get_text(strip=True) if name_element else 'Class'
+
+            if lesson_name in IGNORED_LESSONS:
+                continue
 
             trainer_element = info.select_one('div:not(.appointment-list-group-appointment-availability)') if info else None
             trainer = trainer_element.get_text(strip=True) if trainer_element else ''
