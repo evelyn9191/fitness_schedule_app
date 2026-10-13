@@ -40,23 +40,13 @@ def save_run_details(all_schedules: list) -> None:
     print(f"Run details saved:\n", previous_run_details)
 
 def get_last_lesson_date(all_schedules: list) -> dict:
-    gym_last_lesson_pair = {}
+    gym_last_lesson_date = {}
     for lesson in all_schedules:
-        gym = ""
-        last_lesson_date = ""
+        gym = lesson['gym']
         lesson_date = datetime.datetime.strptime(lesson['date'], DATE_FORMAT_CZ)
-        if not gym:
-            gym = lesson['gym']
-            last_lesson_date = lesson_date
-        elif gym != lesson['gym']:
-            gym_last_lesson_pair[gym] = datetime.datetime.strftime(last_lesson_date, DATE_FORMAT_US)
-            gym = lesson['gym']
-            last_lesson_date = lesson_date
-        else:
-            if lesson_date > last_lesson_date:
-                last_lesson_date = lesson_date
-        gym_last_lesson_pair[gym] = datetime.datetime.strftime(last_lesson_date, DATE_FORMAT_US)
-    return gym_last_lesson_pair
+        if gym not in gym_last_lesson_date or lesson_date > gym_last_lesson_date[gym]:
+            gym_last_lesson_date[gym] = lesson_date
+    return {gym: datetime.datetime.strftime(date, DATE_FORMAT_US) for gym, date in gym_last_lesson_date.items()}
 
 def keep_only_next_two_weeks_schedules(all_schedules: list) -> list:
     cleaned_schedules = []
@@ -74,10 +64,16 @@ def skip_already_scraped_schedules(all_schedules: list) -> list:
         return all_schedules
     
     cleaned_schedules = []
+    seen_gym_dates = set()
     for schedule in all_schedules:
         gym_name = schedule['gym']
         schedule_date = datetime.datetime.strptime(schedule['date'], DATE_FORMAT_CZ).date()
-        
+
+        # The same gym day can be scraped more than once in a single run (e.g. overlapping weeks)
+        if (gym_name, schedule_date) in seen_gym_dates:
+            continue
+        seen_gym_dates.add((gym_name, schedule_date))
+
         if gym_name not in previous_run_details:
             cleaned_schedules.append(schedule)
             continue
