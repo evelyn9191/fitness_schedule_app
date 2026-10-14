@@ -7,6 +7,7 @@ from helpers import get_next_schedule_start_date, get_date_string
 
 SCHEDULE_API_URL = "https://yogaholick.reenio.cz/cs/api/Term/List"
 GYM = "Yogaholick"
+IGNORED_LESSONS = ["Létající jóga v sítích", "Podzimní meditace: Zpátky k sobě"]
 
 
 def get_schedule():
@@ -48,10 +49,13 @@ def parse_schedule(schedules: dict):
 
         lesson = {}
 
+        lesson["name"] = event["eventResources"][0]["name"]
+        if lesson["name"] in IGNORED_LESSONS:
+            continue
+
         start_time = _convert_to_prague_time(event["start"])
         end_time = _convert_to_prague_time(event["end"])
         lesson["time"] = f"{start_time}-{end_time}"
-        lesson["name"] = event["eventResources"][0]["name"]
         lesson["trainer"] = event["eventResources"][0]["employee"]["name"]
         try:
             lesson["spots"] = f"{event["reservations"][0]["capacity"]}/{event["maxCapacity"]}"
