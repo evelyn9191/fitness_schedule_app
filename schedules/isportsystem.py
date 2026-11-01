@@ -41,7 +41,10 @@ def parse_new_isportsystem_html(html, gym_name, venue_color_filter=None):
         
         name_tag = inner_soup.select_one('.activityTooltipName')
         name = name_tag.get_text(strip=True) if name_tag else None
-        if name in IGNORED_LESSONS:
+        # Normalize name for comparison (handle ampersand variations and extra whitespace)
+        normalized_name = name.replace('&amp;', '&').replace('  ', ' ').strip() if name else None
+        
+        if normalized_name in IGNORED_LESSONS or name in IGNORED_LESSONS:
             continue
 
         labels = inner_soup.select('.tItem1')
@@ -116,7 +119,9 @@ class ISportSystemSchedulesHandler:
             inner_soup = BeautifulSoup(raw_title, 'html.parser')
             name_tag = inner_soup.select_one('.activityTooltipName')
             name = name_tag.get_text(strip=True) if name_tag else None
-            if name in IGNORED_LESSONS:
+
+            normalized_name = name.replace('&amp;', '&').replace('  ', ' ').strip() if name else None
+            if normalized_name in IGNORED_LESSONS or name in IGNORED_LESSONS:
                 continue
 
             labels = inner_soup.select('.tItem1')
