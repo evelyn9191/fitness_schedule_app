@@ -3,12 +3,11 @@ import datetime
 from bs4 import BeautifulSoup
 
 IGNORED_LESSONS = [
-    "Pronájem sálu", "PetsYoga", "Individuální lekce", "Jóga MAMI & MIMI", "Open shala", "Jóga pro těhotné",
-    "Pravidelné jógové hry pro rodiče a děti 4 - 8 let", "Jógové hry pro rodiče a děti 4 - 8 let",
-    "Jógové hry pro rodiče a děti 5 - 12 let", "Těhotenská jóga", "Létající jóga v sítích", "Jóga & pilates",
-    "Lunch jóga", "Power MAMI & MIMI", "Létající jóga v sítích", "Jógové hry pro rodiče a děti 4 - 10 let",
-    "Jógová TERAPIE", "Jemná jóga pro ženy", "Večerní hatha jóga", "Jóga pro zdravá záda (záskok)", "Jóga pro zdravá záda"
+    "Pronájem sálu", "PetsYoga", "Individuální lekce", "Open shala", "Jóga & pilates",
+    "Lunch jóga", "Jógová TERAPIE"
     ]
+
+IGNORED_KEYWORDS = ["hatha", "těhot", "záda", "děti", "terapie", "mimi", "sítích", "ženy"]
 SIDDHA_YOGA_FUGNEROVA_VENUE_COLOR = "#f2b825"
 
 
@@ -43,8 +42,20 @@ def parse_new_isportsystem_html(html, gym_name, venue_color_filter=None):
         name = name_tag.get_text(strip=True) if name_tag else None
         # Normalize name for comparison (handle ampersand variations and extra whitespace)
         normalized_name = name.replace('&amp;', '&').replace('  ', ' ').strip() if name else None
-        
+
+        # Check if lesson should be ignored
+        should_ignore = False
         if normalized_name in IGNORED_LESSONS or name in IGNORED_LESSONS:
+            should_ignore = True
+        else:
+            # Check for ignored keywords (case-insensitive)
+            name_lower = (normalized_name or name or "").lower()
+            for keyword in IGNORED_KEYWORDS:
+                if keyword in name_lower:
+                    should_ignore = True
+                    break
+
+        if should_ignore:
             continue
 
         labels = inner_soup.select('.tItem1')
@@ -121,7 +132,20 @@ class ISportSystemSchedulesHandler:
             name = name_tag.get_text(strip=True) if name_tag else None
 
             normalized_name = name.replace('&amp;', '&').replace('  ', ' ').strip() if name else None
+
+            # Check if lesson should be ignored
+            should_ignore = False
             if normalized_name in IGNORED_LESSONS or name in IGNORED_LESSONS:
+                should_ignore = True
+            else:
+                # Check for ignored keywords (case-insensitive)
+                name_lower = (normalized_name or name or "").lower()
+                for keyword in IGNORED_KEYWORDS:
+                    if keyword in name_lower:
+                        should_ignore = True
+                        break
+
+            if should_ignore:
                 continue
 
             labels = inner_soup.select('.tItem1')
