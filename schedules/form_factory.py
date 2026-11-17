@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 GLOBALLY_IGNORED_LESSONS = ["CYCLING", "BARRE workout", "Cvičení pro těhotné",
                    "MAMINKY", "BOSU", "CHI-TONING", "BODY TRAINING", "FITBOX",
-                   "FYZIO PILATES", "HIIT", "HATHA JÓGA", "ZDRAVÁ ZÁDA", "Saunové rituály".
+                   "FYZIO PILATES", "HIIT", "HATHA JÓGA", "ZDRAVÁ ZÁDA", "Saunové rituály",
                     "Les Mills SPRINT (CYCLING)"
                    ]
 
