@@ -8,6 +8,7 @@ from helpers import get_next_schedule_start_date, get_date_string
 SCHEDULE_API_URL = "https://yogaholick.reenio.cz/cs/api/Term/List"
 GYM = "Yogaholick"
 IGNORED_LESSONS = ["Létající jóga v sítích", "Podzimní meditace: Zpátky k sobě"]
+IGNORED_KEYWORDS = ["hatha", "těhot", "záda", "děti", "terapie", "mimi", "sítích", "ženy"]
 
 
 def get_schedule():
@@ -50,7 +51,20 @@ def parse_schedule(schedules: dict):
         lesson = {}
 
         lesson["name"] = event["eventResources"][0]["name"]
+
+        # Check if lesson should be ignored
+        should_ignore = False
         if lesson["name"] in IGNORED_LESSONS:
+            should_ignore = True
+        else:
+            # Check for ignored keywords (case-insensitive)
+            name_lower = lesson["name"].lower()
+            for keyword in IGNORED_KEYWORDS:
+                if keyword in name_lower:
+                    should_ignore = True
+                    break
+
+        if should_ignore:
             continue
 
         start_time = _convert_to_prague_time(event["start"])

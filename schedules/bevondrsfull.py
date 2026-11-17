@@ -12,11 +12,11 @@ BASE_URL = "https://bevondrsfull.clubspire.cz"
 SCHEDULE_URL = f"{BASE_URL}/timeline/week"
 GYM = "Be Vondrsfull"
 IGNORED_LESSONS = [
-    "PRONÁJEM SÁLU", "BARRE BODY", "PILATES S ROLLERY", "REFORMER PILATES",
+    "PRONÁJEM SÁLU", "PILATES S ROLLERY", "REFORMER PILATES",
     "POWER PLATE", "KRUHOVÝ TRÉNINK", "FYZIO PILATES", "PILATES", "TRX", "DYNAMICKÁ YOGA (Nepřijímáme Multisport)",
-    "BARRE DYNAMIC", "BARRE FUSION", "BARRE BURN", "BARRE SCULPT", "JIN YOGA", "BARRE FLOW",
-    "BARRE & WEIGHT", "JÓGA WORKSHOP", "BARRE TONE"
+    "JIN YOGA", "JÓGA WORKSHOP"
     ]
+IGNORED_KEYWORDS = ["barre"]
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -166,7 +166,19 @@ def parse_schedule(html: str, parse_from: datetime.date) -> list[dict[str, Any]]
                 lesson_name = lesson_name_full
                 trainer_part = ""
 
+            # Check if lesson should be ignored
+            should_ignore = False
             if any(ignored in lesson_name for ignored in IGNORED_LESSONS):
+                should_ignore = True
+            else:
+                # Check for ignored keywords (case-insensitive)
+                name_lower = lesson_name.lower()
+                for keyword in IGNORED_KEYWORDS:
+                    if keyword in name_lower:
+                        should_ignore = True
+                        break
+
+            if should_ignore:
                 continue
 
             location_elem = description.find('div', class_='lesson_description')
